@@ -17,9 +17,8 @@
 #include <vector>
 #include <string>
 
-#ifndef physics_hpp
 #include "physics.hpp"
-#endif
+#include "utils/renderer_utils.hpp"
 
 #define NUM_VERTICES 256
 
@@ -37,11 +36,6 @@ class Renderer
     GLuint frag_shader;
     GLuint shader_program;
     
-private:
-    std::string loadShaderSource(const std::string& filename);
-    int compileShaderError(GLuint shader);
-    int linkShadersError(GLuint shader_program);
-    
 public:
     // Physics engine
     Physics *physics;
@@ -49,9 +43,9 @@ public:
     //Initialization
     Renderer();
     ~Renderer();
-    void initBuffers();
-    int initShaders(std::string vert_path, std::string frag_path);
     void addPhysics(Physics *_physics);
+    void initBuffers();
+
     // Rendering math and rendering
     void setCircleCenter(glm::vec3 center);
     void setColor(glm::vec4 color);
