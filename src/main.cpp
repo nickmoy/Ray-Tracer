@@ -11,23 +11,16 @@
 #include <OpenGL/gl3.h>
 #include <glm/glm.hpp>
 #include <iostream>
-#include <format>
 #include "physics.hpp"
 #include "renderer.hpp"
 #include "window.hpp"
 
 #define FPS 60
-const float FRAME_DELTA_MIL_SEC = 1000.0f/60;   // Fixed update FPS
-const float TIME_STEP_DELTA = 1.0f/60;          // Fixed Game logic delta time
+const float FRAME_DELTA_TIME_MIL_SEC = 1000.0f/FPS;   // Fixed frametime update based on FPS
+const float GAME_DELTA_TIME = 1.0f/60;          // Fixed Game logic delta time
 
 int main(int argc, char *argv[])
 {
-    // Main loop objects
-    SDL_Event e;
-    bool running = true;
-    unsigned int a = SDL_GetTicks();            // Real time update guard
-    unsigned int b = SDL_GetTicks();            // Game logic time guard
-    unsigned int lastRender = SDL_GetTicks();
     
     Window window = Window();
     Renderer renderer = Renderer();
@@ -43,6 +36,13 @@ int main(int argc, char *argv[])
     glClear(GL_COLOR_BUFFER_BIT);
 
     std::cout << "Game started!";
+
+    // Main loop objects
+    SDL_Event e;
+    bool running = true;
+    unsigned int a = SDL_GetTicks();            // Real time frame update guard
+    unsigned int b = SDL_GetTicks();            // Game logic time guard
+    unsigned int lastRender = SDL_GetTicks();
     
     // Main program loop
     while(running)
@@ -50,25 +50,23 @@ int main(int argc, char *argv[])
         // Cap Framerate
         a = SDL_GetTicks();
 
-        // If Game logic isn't ready to update again since
-        // last frame update, wait
         if(a < b)
         {
+            // I delay by 2 just b/c it's probably easier on the CPU?
             SDL_Delay(2);
         }
         else
         {
-            // Game logic is now behind current time, so we update
-            // Game logic until it is ahead of time
+            /* Game Loop */
             while(a > b)
             {
                 // Poll events
                 window.PollIO(e, &running);
                 
                 /* Game physics */
-                // physics.update(TIME_STEP_DELTA);
+                // physics.update(GAME_DELTA_TIME);
                 
-                b += FRAME_DELTA_MIL_SEC;
+                b += FRAME_DELTA_TIME_MIL_SEC;
             }
             
             // Render
