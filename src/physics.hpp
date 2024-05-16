@@ -9,7 +9,6 @@
 #define physics_hpp
 
 #include <stdio.h>
-#include <iostream>
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -18,8 +17,6 @@
 #define NUM_STEPS 1
 #define VELOCITY_COEFF 1.0f/2
 #define BOUNCINESS 1.0f
-
-#endif /* physics_hpp */
 
 
 class Circle
@@ -50,3 +47,6 @@ public:
     void resolveCollisionsWithStage();
     void resolveCollisions();
 };
+
+
+#endif /* physics_hpp */

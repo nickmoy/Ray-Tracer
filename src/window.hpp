@@ -12,14 +12,10 @@
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
-#include <iostream>
-#include <format>
 
 #ifndef renderer_hpp
 #include "renderer.hpp"
 #endif
-
-#endif /* window_h */
 
 
 class Window
@@ -36,3 +32,6 @@ public:
     void PollIO(SDL_Event e, bool *running);
     void addRenderer(Renderer *_renderer);
 };
+
+
+#endif /* window_h */

@@ -1,3 +1,6 @@
+#ifndef renderer_utils_hpp
+#define renderer_utils_hpp
+
 #include <OpenGL/gltypes.h>
 #include <string>
 #include <OpenGL/gl3.h>
@@ -117,3 +120,5 @@ int initShaders(std::string vert_path, std::string frag_path)
     return 0;
 }
 
+
+#endif

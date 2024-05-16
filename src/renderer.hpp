@@ -14,19 +14,14 @@
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
 #include <glm/glm.hpp>
-#include <iostream>
 #include <vector>
-#include <fstream>
 #include <string>
-#include <sstream>
 
 #ifndef physics_hpp
 #include "physics.hpp"
 #endif
 
 #define NUM_VERTICES 256
-
-#endif /* renderer_hpp */
 
 
 class Renderer
@@ -65,3 +60,6 @@ public:
     glm::vec3* buildSquareVertices();
     void render();
 };
+
+
+#endif /* renderer_hpp */
