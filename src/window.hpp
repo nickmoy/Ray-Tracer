@@ -5,17 +5,17 @@
 //  Created by Nicholas Moy on 4/10/24.
 //
 
-#ifndef window_h
-#define window_h
+#ifndef window_hpp
+#define window_hpp
 
+#ifndef GL_SILENCE_DEPRECATION
 #define GL_SILENCE_DEPRECATION
+#endif
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
 
-#ifndef renderer_hpp
 #include "renderer.hpp"
-#endif
 
 
 class Window

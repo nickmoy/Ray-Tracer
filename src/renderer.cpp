@@ -68,7 +68,6 @@ void Renderer::setColor(vec4 color)
     glUniform4f(glGetUniformLocation(shader_program, "color"), color.r, color.g, color.b, color.a);
 }
 
-
 /*
  * Return random color
  */
@@ -76,7 +75,6 @@ vec4 Renderer::randomColor()
 {
     return vec4((float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100);
 }
-
 
 /*
  * Adds physics object to renderer.
