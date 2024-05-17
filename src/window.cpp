@@ -6,6 +6,9 @@
 //
 
 #include "window.hpp"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#include <cstdlib>
 
 using namespace glm;
 
@@ -96,4 +99,10 @@ void Window::PollIO(SDL_Event e, bool *running)
 void Window::addRenderer(Renderer *_renderer)
 {
     renderer = _renderer;
+}
+
+void Window::quit() {
+    SDL_GL_DeleteContext(context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }

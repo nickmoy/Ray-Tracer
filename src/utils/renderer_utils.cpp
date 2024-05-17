@@ -58,12 +58,8 @@ int linkShadersError(GLuint shader_program)
  * Initialize vertex shader and fragment shader, then compile/link them to
  * shader program.
  */
-int initShaders(std::string vert_path, std::string frag_path)
+int initShaders(GLuint vert_shader, std::string vert_path, GLuint frag_shader, std::string frag_path, GLuint shader_program)
 {
-    GLuint vert_shader; 
-    GLuint frag_shader; 
-    GLuint shader_program; 
-
     // Create Vertex shader
     std::string source = loadShaderSource(vert_path);
     if(source.empty()) { return -1; }

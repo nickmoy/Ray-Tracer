@@ -31,6 +31,9 @@ public:
     void changeColor(float R, float G, float B, float A);
     void PollIO(SDL_Event e, bool *running);
     void addRenderer(Renderer *_renderer);
+
+    // Cleanup
+    void quit();
 };
 
 

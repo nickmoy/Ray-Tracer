@@ -26,8 +26,6 @@
 class Renderer
 {
     // Buffer objects
-    std::vector<glm::vec3> circle_vertices;
-    glm::vec3 *square_vertices;
     GLuint VBO[2];
     GLuint VAO[2];
     
@@ -42,7 +40,6 @@ public:
 
     //Initialization
     Renderer();
-    ~Renderer();
     void addPhysics(Physics *_physics);
     void initBuffers();
 
@@ -50,8 +47,6 @@ public:
     void setCircleCenter(glm::vec3 center);
     void setColor(glm::vec4 color);
     glm::vec4 randomColor();
-    std::vector<glm::vec3> buildCircleVertices(float radius);
-    glm::vec3* buildSquareVertices();
     void render();
 };
 

@@ -5,6 +5,7 @@
 //  Created by Nicholas Moy on 5/15/24.
 //
 
+#include <SDL2/SDL_video.h>
 #define GL_SILENCE_DEPRECATION
 
 #include <SDL2/SDL.h>
@@ -78,6 +79,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    SDL_Quit();
+    // Clean up SDL Window
+    window.quit();
     return 0;
 }

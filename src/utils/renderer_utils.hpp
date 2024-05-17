@@ -14,7 +14,7 @@
 std::string loadShaderSource(const std::string& filename);
 int compileShaderError(GLuint shader);
 int linkShadersError(GLuint shader_program);
-int initShaders(std::string vert_path, std::string frag_path);
+int initShaders(GLuint vert_shader, std::string vert_path, GLuint frag_shader, std::string frag_path, GLuint shader_program);
 
 
 #endif /* renderer_utils.hpp */
