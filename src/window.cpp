@@ -7,10 +7,10 @@
 
 #include "window.hpp"
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
-#include <cstdlib>
+#include <iostream>
 
 using namespace glm;
+
 
 Window::Window()
 {
@@ -52,9 +52,9 @@ void changeColor(float R, float G, float B, float A)
  * Poll IO events
  *
  * Click "q" to quit program
- * Left click mouse to create circle on screen
+ * Left click mouse to create sphere on screen
  */
-void Window::PollIO(SDL_Event e, bool *running)
+void Window::pollIO(SDL_Event e, bool *running)
 {
     while(SDL_PollEvent(&e))
     {
@@ -79,19 +79,19 @@ void Window::PollIO(SDL_Event e, bool *running)
         else if(e.type == SDL_MOUSEBUTTONUP)
         {
             // changeColor((float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100, window);
-            /* Generate center for circle of radius=RADIUS so that it stays on screen */
+            /* Generate center for sphere of radius=RADIUS so that it stays on screen */
             //glm::vec3 center = glm::vec3((float)(rand() % 100)/100 * (2 - 2*RADIUS) - (1 - RADIUS), (float)(rand() % 100)/100 * (2 - 2*RADIUS) - (1 - RADIUS), 0.0);
             //renderer->setCircleCenter(center);
             
             // Create new circles when mouse is clicked
-            int pixel_x, pixel_y;
-            SDL_GetMouseState(&pixel_x, &pixel_y);
-            //std::cout << "(x,y) : " << "(" << pixel_x << ", " << pixel_y << ")" << "\n";
-            float x = ((float)pixel_x/768) * 2 - 1;
-            float y = 1 - ((float)pixel_y/768) * 2;
-            
-            Circle *circle = new Circle(vec2(x, y));
-            renderer->physics->objects.push_back(circle);
+            // int pixel_x, pixel_y;
+            // SDL_GetMouseState(&pixel_x, &pixel_y);
+            // //std::cout << "(x,y) : " << "(" << pixel_x << ", " << pixel_y << ")" << "\n";
+            // float x = ((float)pixel_x/768) * 2 - 1;
+            // float y = 1 - ((float)pixel_y/768) * 2;
+            // 
+            // Sphere *sphere = new Sphere(vec2(x, y)); /* Need to change sphere constructor here */
+            // renderer->physics->objects.push_back(sphere);
         }
     }
 }

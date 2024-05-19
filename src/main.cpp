@@ -5,8 +5,8 @@
 //  Created by Nicholas Moy on 5/15/24.
 //
 
-#include <SDL2/SDL_video.h>
 #define GL_SILENCE_DEPRECATION
+
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
@@ -16,9 +16,11 @@
 #include "renderer.hpp"
 #include "window.hpp"
 
+
 #define FPS 60
-const float FRAME_DELTA_TIME_MIL_SEC = 1000.0f/FPS;   // Fixed frametime update based on FPS
-const float GAME_DELTA_TIME = 1.0f/60;          // Fixed Game logic delta time
+#define FRAME_DELTA_TIME_MIL_SEC 1000.0f/FPS   // Fixed frametime update based on FPS
+#define GAME_DELTA_TIME 1.0f/60          // Fixed Game logic delta time
+
 
 int main(int argc, char *argv[])
 {
@@ -26,7 +28,7 @@ int main(int argc, char *argv[])
     Window window = Window();
     Renderer renderer = Renderer();
     Physics physics = Physics();
-    
+
     window.addRenderer(&renderer);
     renderer.addPhysics(&physics);
     
@@ -44,7 +46,7 @@ int main(int argc, char *argv[])
     unsigned int a = SDL_GetTicks();            // Real time frame update guard
     unsigned int b = SDL_GetTicks();            // Game logic time guard
     unsigned int lastRender = SDL_GetTicks();
-    
+
     // Main program loop
     while(running)
     {
@@ -53,8 +55,8 @@ int main(int argc, char *argv[])
 
         if(a < b)
         {
-            // I delay by 2 just b/c it's probably easier on the CPU?
-            SDL_Delay(2);
+            // I delay by 2 just b/c it's probably less taxing on the CPU?
+            SDL_Delay(1);
         }
         else
         {
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
             while(a > b)
             {
                 // Poll events
-                window.PollIO(e, &running);
+                window.pollIO(e, &running);
                 
                 /* Game physics */
                 // physics.update(GAME_DELTA_TIME);

@@ -8,7 +8,9 @@
 #ifndef renderer_hpp
 #define renderer_hpp
 
+#include "glm/fwd.hpp"
 #define GL_SILENCE_DEPRECATION
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
@@ -21,13 +23,17 @@
 #include "utils/renderer_utils.hpp"
 
 #define NUM_VERTICES 256
+#define SCREEN_W 768
+#define SCREEN_H 768
 
 
 class Renderer
 {
     // Buffer objects
-    GLuint VBO[2];
-    GLuint VAO[2];
+    GLuint VBO;
+    GLuint VAO;
+
+    // glm::vec4 pixels[SCREEN_W][SCREEN_H];
     
     // Shader objects
     GLuint vert_shader;
@@ -44,10 +50,9 @@ public:
     void initBuffers();
 
     // Rendering math and rendering
-    void setCircleCenter(glm::vec3 center);
-    void setColor(glm::vec4 color);
-    glm::vec4 randomColor();
     void render();
+    int setViewMatrixUniform(glm::vec3 camera_pos);
+    void setRayColor(glm::vec4 color);
 };
 
 

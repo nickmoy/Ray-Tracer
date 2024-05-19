@@ -6,6 +6,7 @@
 //
 
 #include "renderer.hpp"
+#include <glm/ext/matrix_clip_space.hpp>
 
 using namespace glm;
 
@@ -39,51 +40,32 @@ void Renderer::render()
  */
 void Renderer::initBuffers()
 {
-    // Generate buffers
-    glGenBuffers(2, VBO);
-    glGenVertexArrays(2, VAO);
-    
-    // 1st Buffer containing vertices for outer circle stage
-    glBindVertexArray(VAO[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*(circle_vertices.size()), &circle_vertices[0], GL_STATIC_READ);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    
-    glEnableVertexAttribArray(0);
-    
-    // 2nd Buffer containing quads for each circle object
-    glBindVertexArray(VAO[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*4, &square_vertices[0], GL_STATIC_READ);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vec4)*SCREEN_W*SCREEN_H, &pixels[0], GL_DYNAMIC_READ);
+
+    // // Generate buffers
+    // glGenBuffers(2, VBO);
+    // glGenVertexArrays(2, VAO);
+    // 
+    // // 1st Buffer containing vertices for outer circle stage
+    // glBindVertexArray(VAO[0]);
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    // // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*(circle_vertices.size()), &circle_vertices[0], GL_STATIC_READ);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // 
+    // glEnableVertexAttribArray(0);
+    // 
+    // // 2nd Buffer containing quads for each circle object
+    // glBindVertexArray(VAO[1]);
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+    // // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*4, &square_vertices[0], GL_STATIC_READ);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
 }
 
-/*
- * Set uniform "center" in vertex shader to position of circle currently
- * being drawn.
- */
-void Renderer::setCircleCenter(vec3 center)
-{
-    GLuint center_location = glGetUniformLocation(shader_program, "center");
-    glUniform3f(center_location, center.x, center.y, center.z);
-}
-
-/*
- * Set uniform "color" in vertex shader
- */
-void Renderer::setColor(vec4 color)
-{
-    glUniform4f(glGetUniformLocation(shader_program, "color"), color.r, color.g, color.b, color.a);
-}
-
-/*
- * Return random color
- */
-vec4 Renderer::randomColor()
-{
-    return vec4((float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100);
-}
 
 /*
  * Adds physics object to renderer.

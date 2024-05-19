@@ -19,33 +19,52 @@
 #define BOUNCINESS 1.0f
 
 
-class Circle
+class Sphere
 {
-    glm::vec2 velc_ghost_pos;
-    
-    
+
 public:
-    Circle(glm::vec2 _current_pos);
-    void update_position(float dt);
+    Sphere(glm::vec2 _current_pos);
+
+
+    glm::vec4 color;
+
+    // Old Verlet Stuff
     glm::vec2 current_pos;
     glm::vec2 previous_pos;
     glm::vec2 acceleration = glm::vec2(0.0, GRAVITY);
-    void full_verlet_step(float dt);
+    void updatePosition(float dt);
+    void fullVerletStep(float dt);
+};
+
+
+class Ray
+{
+
+public:
+    Ray(glm::vec3 _pos, glm::vec4 _color);
+
+    glm::vec3 pos;
+    glm::vec4 color;
+
+    // glm::vec4 colorMultiply(glm::vec4 color2);
+    bool collideWithSphere(Sphere sphere);
 };
 
 
 class Physics
 {
-    void resolveCollisionWithStage(Circle *circle);
-    bool isOutofBounds(Circle *circle);
+    // Old Verlet Stuff
+    void resolveCollisionWithStage(Sphere *sphere);
+    bool isOutofBounds(Sphere *sphere);
     
 public:
     ~Physics();
-    std::vector<Circle*> objects;
-    void update(float dt);
-    bool setPosition(Circle *circle);
+    std::vector<Sphere*> objects;
     void resolveCollisionsWithStage();
     void resolveCollisions();
+
+    // Old Verlet Stuff
+    void update(float dt);
 };
 
 

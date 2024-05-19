@@ -8,9 +8,7 @@
 #ifndef window_hpp
 #define window_hpp
 
-#ifndef GL_SILENCE_DEPRECATION
 #define GL_SILENCE_DEPRECATION
-#endif
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
@@ -29,7 +27,7 @@ public:
     Window();
     operator SDL_Window* () const {return window;}
     void changeColor(float R, float G, float B, float A);
-    void PollIO(SDL_Event e, bool *running);
+    void pollIO(SDL_Event e, bool *running);
     void addRenderer(Renderer *_renderer);
 
     // Cleanup

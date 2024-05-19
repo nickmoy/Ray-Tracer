@@ -1,4 +1,9 @@
 #include "renderer_utils.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+using namespace glm;
 
 
 /*
@@ -105,4 +110,30 @@ int initShaders(GLuint vert_shader, std::string vert_path, GLuint frag_shader, s
     glDeleteShader(frag_shader);
     
     return 0;
+}
+
+/*
+ * Set uniform "color" in vertex shader
+ */
+void setColor(GLuint shader_program, vec4 color)
+{
+    glUniform4f(glGetUniformLocation(shader_program, "color"), color.r, color.g, color.b, color.a);
+}
+
+/*
+ * Return random color
+ */
+vec4 randomColor()
+{
+    return vec4((float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100);
+}
+
+/*
+ * Set uniform "center" in vertex shader to position of circle currently
+ * being drawn.
+ */
+void setCircleCenter(GLuint shader_program, vec3 center)
+{
+    GLuint center_location = glGetUniformLocation(shader_program, "center");
+    glUniform3f(center_location, center.x, center.y, center.z);
 }

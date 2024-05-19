@@ -9,21 +9,21 @@
 
 using namespace glm;
 
-Circle::Circle(vec2 pos)
+Sphere::Sphere(vec2 pos)
 {
     current_pos = pos;
     previous_pos = pos + VELOCITY_COEFF * vec2(-0.1, 0.0);
 }
 
 /*
- * Update position of current circle one step by dt milliseconds.
+ * Update position of current sphere one step by dt milliseconds.
  */
-void Circle::update_position(float dt)
+void Sphere::updatePosition(float dt)
 {
     // Verlet integration step
     vec2 velocity = current_pos - previous_pos;
     vec2 next_pos = current_pos + velocity + (acceleration * dt * dt);
-    
+
     previous_pos = current_pos;
     current_pos = next_pos;
     //std::cout << current_pos.x << ", " << current_pos.y << "\n";
@@ -33,15 +33,24 @@ void Circle::update_position(float dt)
  * Perform one full verlet integration forward dt milliseconds with
  * num_steps intermediate steps.
  */
-void Circle::full_verlet_step(float dt)
+void Sphere::fullVerletStep(float dt)
 {
     float num_steps = NUM_STEPS;
     float intermediate_dt = dt / num_steps;
     while(num_steps > 0)
     {
-        update_position(intermediate_dt);
+        updatePosition(intermediate_dt);
         num_steps--;
     }
+}
+
+/*
+ * Check if the current ray has collided with a sphere 
+ */
+bool Ray::collideWithSphere(Sphere sphere)
+{
+    // Write down the quadratic formula thing here
+    return true;
 }
 
 /*
@@ -49,27 +58,27 @@ void Circle::full_verlet_step(float dt)
  */
 void Physics::update(float dt)
 {
-    std::vector<Circle*>::iterator iter;
+    std::vector<Sphere*>::iterator iter;
     float num_steps = NUM_STEPS;
     dt = dt/num_steps;
 
     // Loop for NUM_STEPS
     while(num_steps > 0)
     {
-        // Update position of each circle
+        // Update position of each sphere
         for(iter = objects.begin(); iter != objects.end(); )
         {
-            Circle *circle = *iter;
-            circle->update_position(dt);
+            Sphere *sphere = *iter;
+            sphere->updatePosition(dt);
             
             // Resolve collision with stage
-            resolveCollisionWithStage(circle);
+            resolveCollisionWithStage(sphere);
             
             // Delete circles out of bounds
-            if(!isOutofBounds(circle))
+            if(!isOutofBounds(sphere))
             {
                 iter = objects.erase(iter);
-                delete circle;
+                delete sphere;
             }
             else
             {
@@ -85,29 +94,29 @@ void Physics::update(float dt)
 }
 
 /*
- * Check if circle is out of bounds. I give some leeway off screen by about 1.0f.
+ * Check if sphere is out of bounds. I give some leeway off screen by about 1.0f.
  */
-bool Physics::isOutofBounds(Circle *circle)
+bool Physics::isOutofBounds(Sphere *sphere)
 {
-    vec2 pos = circle->current_pos;
+    vec2 pos = sphere->current_pos;
     return (-2.0f < pos.x && pos.x < 2.0f)
         && (-2.0f < pos.y && pos.y < 2.0f);
 }
 
 void Physics::resolveCollisionsWithStage()
 {
-    for(Circle *circle : objects)
+    for(Sphere *sphere : objects)
     {
-        resolveCollisionWithStage(circle);
+        resolveCollisionWithStage(sphere);
     }
 }
 
-void Physics::resolveCollisionWithStage(Circle *circle)
+void Physics::resolveCollisionWithStage(Sphere *sphere)
 {
-    float norm = length(circle->current_pos);
+    float norm = length(sphere->current_pos);
     if (norm + RADIUS > 1.0f)
     {
-        circle->current_pos = circle->current_pos * ((1.0f - RADIUS)/norm);
+        sphere->current_pos = sphere->current_pos * ((1.0f - RADIUS)/norm);
     }
 }
 
@@ -116,17 +125,17 @@ void Physics::resolveCollisionWithStage(Circle *circle)
  */
 void Physics::resolveCollisions()
 {
-    std::vector<Circle*>::iterator iter_1;
-    std::vector<Circle*>::iterator iter_2;
+    std::vector<Sphere*>::iterator iter_1;
+    std::vector<Sphere*>::iterator iter_2;
     for(iter_1 = objects.begin(); iter_1 != objects.end(); )
     {
-        Circle *circle_1 = *iter_1;
+        Sphere *sphere_1 = *iter_1;
         for(iter_2 = std::next(iter_1, 1); iter_2 != objects.end(); )
         {
-            Circle *circle_2 = *iter_2;
+            Sphere *sphere_2 = *iter_2;
             
-            vec2 pos_1 = circle_1->current_pos;
-            vec2 pos_2 = circle_2->current_pos;
+            vec2 pos_1 = sphere_1->current_pos;
+            vec2 pos_2 = sphere_2->current_pos;
             
             if(length(pos_2 - pos_1) < 2 * RADIUS)
             {
@@ -134,8 +143,8 @@ void Physics::resolveCollisions()
                 float norm = length(normal);
                 float overlap = RADIUS - norm/2;
                 
-                circle_1->current_pos = pos_1 - normal * (overlap/norm);
-                circle_2->current_pos = pos_2 + normal * (overlap/norm);
+                sphere_1->current_pos = pos_1 - normal * (overlap/norm);
+                sphere_2->current_pos = pos_2 + normal * (overlap/norm);
             }
             
             iter_2++;
@@ -147,8 +156,8 @@ void Physics::resolveCollisions()
 
 Physics::~Physics()
 {
-    for(Circle *circle : objects)
+    for(Sphere *sphere : objects)
     {
-        delete circle;
+        delete sphere;
     }
 }
