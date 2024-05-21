@@ -90,23 +90,23 @@ void Window::pollIO(SDL_Event e, bool *running)
             moved_to_x += e.motion.x;
             moved_to_y += 768 - e.motion.y;
             renderer->rotateCamera(moved_to_x - clicked_at.x, moved_to_y - clicked_at.y);
-            std::cout << "Mouse moved to: (" << moved_to_x << ", " << moved_to_y << ")\n";
-            std::cout << "Rotated by: (" << moved_to_x - clicked_at.x << ", " << moved_to_y - clicked_at.y << ")\n";
-            std::cout << "Last mouse click at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
-            std::cout.flush();
+            // std::cout << "Mouse moved to: (" << moved_to_x << ", " << moved_to_y << ")\n";
+            // std::cout << "Rotated by: (" << moved_to_x - clicked_at.x << ", " << moved_to_y - clicked_at.y << ")\n";
+            // std::cout << "Last mouse click at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
+            // std::cout.flush();
         }
         // Only detects the position when the Mouse is JUST Clicked Down
         else if(e.type == SDL_MOUSEBUTTONDOWN)
         {
             clicked_at.x = e.motion.x;
             clicked_at.y = 768 - e.motion.y;
-            std::cout << "Mouse just got clicked down at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
+            // std::cout << "Mouse just got clicked down at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
         }
         // Only detects the position when Mouse Click Ends
         else if(e.type == SDL_MOUSEBUTTONUP)
         {
-            std::cout << "Mouse clicked ended at: (" << e.motion.x << ", " << 768 - e.motion.y << ")\n";
-            std::cout.flush();
+            // std::cout << "Mouse clicked ended at: (" << e.motion.x << ", " << 768 - e.motion.y << ")\n";
+            // std::cout.flush();
             renderer->doneRotatingCamera();
             // Create new circles when mouse is clicked
             // int pixel_x, pixel_y;
