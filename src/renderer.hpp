@@ -30,15 +30,18 @@
 class Renderer
 {
     // Buffer objects
-    GLuint VBO;
-    GLuint VAO;
+    GLuint VBO = -1;
+    GLuint VAO = -1;
 
     // glm::vec4 pixels[SCREEN_W][SCREEN_H];
     
     // Shader objects
-    GLuint vert_shader;
-    GLuint frag_shader;
-    GLuint shader_program;
+    GLuint vert_shader = -1;
+    GLuint frag_shader = -1;
+    GLuint shader_program = -1;
+
+    glm::vec3 *square_vertices;
+    glm::mat4 view;
     
 public:
     // Physics engine
@@ -49,10 +52,12 @@ public:
     void addPhysics(Physics *_physics);
     void initBuffers();
 
-    // Rendering math and rendering
+    // Rendering
     void render();
-    int setViewMatrixUniform(glm::vec3 camera_pos);
-    void setRayColor(glm::vec4 color);
+    float* buildSquareVertices();
+
+    // Rendering Math
+    void rotateCamera(float dx, float dy);
 };
 
 

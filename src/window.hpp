@@ -18,6 +18,10 @@
 
 class Window
 {
+
+private:
+    glm::vec3 mouse_pressed_pos;
+    glm::vec3 mouse_released_pos;
     
 public:
     SDL_Window *window;

@@ -6,32 +6,37 @@
 //
 
 #include "renderer.hpp"
-#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/mat4x4.hpp>
+#include <iostream>
 
 using namespace glm;
 
 
 Renderer::Renderer()
 {
+    square_vertices = new vec3[4]
+    {
+        vec3(-1.0f, -1.0f, 0.0f),
+        vec3(1.0f, -1.0f, 0.0f),
+        vec3(1.0f, 1.0f, 0.0f),
+        vec3(-1.0f, 1.0f, 0.0f),
+    };
+    view = mat4(1.0f);
+
     initBuffers();
-    initShaders(vert_shader, "Shaders/circle.vert", frag_shader, "Shaders/circle.frag", shader_program);
+    initShaders(vert_shader, "Shaders/scene.vert", frag_shader, "Shaders/ray_tracer.frag", shader_program);
 }
 
 /*
- * Call OpenGL functions to render to screen.
- * Will draw each pixel by specifying its color from light calculations.
+ * Render to screen by drawing a quad (two triangles over the whole screen)
+ * and then calculating the color of each pixel in fragment shader using
+ * ray tracing
  */
 void Renderer::render()
 {
-    // Draw circles
-    // for(Circle *circle : physics->objects)
-    // {
-    //     glBindVertexArray(VAO[1]);
-    //     glUniform1f(glGetUniformLocation(shader_program, "RADIUS"), RADIUS);
-    //     setCircleCenter(vec3(circle->current_pos, 0.0f));
-    //     setColor(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    //     glDrawArrays(GL_TRIANGLE_FAN, 0, (GLuint)sizeof(square_vertices)-2);
-    // }
+    glBindVertexArray(VAO);
+    // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLuint)square_vertices->length()-2);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
 
@@ -43,8 +48,14 @@ void Renderer::initBuffers()
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
 
+    glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vec4)*SCREEN_W*SCREEN_H, &pixels[0], GL_DYNAMIC_READ);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*4, &square_vertices[0], GL_STATIC_READ);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
 
     // // Generate buffers
     // glGenBuffers(2, VBO);
@@ -64,6 +75,15 @@ void Renderer::initBuffers()
     // // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*4, &square_vertices[0], GL_STATIC_READ);
     // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     // glEnableVertexAttribArray(0);
+}
+
+/*
+ * Rotate the camera based on the change in pixels from the last mouse position
+ * measured in pixels
+ */
+void Renderer::rotateCamera(float dx, float dy)
+{
+    
 }
 
 

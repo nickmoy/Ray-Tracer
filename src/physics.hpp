@@ -41,9 +41,10 @@ class Ray
 {
 
 public:
-    Ray(glm::vec3 _pos, glm::vec4 _color);
+    Ray(glm::vec3 _origin, glm::vec3 _direction, glm::vec4 _color);
 
-    glm::vec3 pos;
+    glm::vec3 origin;
+    glm::vec3 direction;
     glm::vec4 color;
 
     // glm::vec4 colorMultiply(glm::vec4 color2);

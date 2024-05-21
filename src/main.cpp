@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
     glm::vec4 Light_Gray = glm::vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0);
     glClearColor(Light_Gray.x, Light_Gray.y, Light_Gray.z, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+
     SDL_GL_SwapWindow(window);
     glClear(GL_COLOR_BUFFER_BIT);
 

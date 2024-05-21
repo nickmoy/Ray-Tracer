@@ -1,7 +1,14 @@
 #include "renderer_utils.hpp"
+#include <OpenGL/gltypes.h>
+#include <glm/glm.hpp>
+#include <glm/glm/gtx/rotate_vector.inl>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/mat4x4.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <math.h>
 
 using namespace glm;
 
@@ -63,7 +70,7 @@ int linkShadersError(GLuint shader_program)
  * Initialize vertex shader and fragment shader, then compile/link them to
  * shader program.
  */
-int initShaders(GLuint vert_shader, std::string vert_path, GLuint frag_shader, std::string frag_path, GLuint shader_program)
+int initShaders(GLuint &vert_shader, std::string vert_path, GLuint &frag_shader, std::string frag_path, GLuint &shader_program)
 {
     // Create Vertex shader
     std::string source = loadShaderSource(vert_path);
@@ -136,4 +143,29 @@ void setCircleCenter(GLuint shader_program, vec3 center)
 {
     GLuint center_location = glGetUniformLocation(shader_program, "center");
     glUniform3f(center_location, center.x, center.y, center.z);
+}
+
+/*
+ * Set uniform "camera_pos" in vert shader
+ */
+void setCameraPos(GLuint shader_program, vec3 camera_pos)
+{
+    GLuint camera_pos_loc = glGetUniformLocation(shader_program, "camera_pos");
+    glUniform3f(camera_pos_loc, camera_pos.x, camera_pos.y, camera_pos.z);
+}
+
+/*
+ * Set uniform "view" in frag shader by rotating everything around origin
+ * @param dx,dy: The movement of the mouse in pixels
+ */
+void setViewMatrix(GLuint shader_program, mat4 &mat, float dx, float dy)
+{
+    float theta_x = (dx/768 * 2.0f - 1.0f) * 2.0f*M_PI*(1.0f/4.0f);
+    float theta_y = (dy/768 * 2.0f - 1.0f) * 2.0f*M_PI*(1.0f/4.0f);
+
+    mat = glm::rotate(mat, theta_x, vec3(0.0f, 1.0f, 0.0f));
+    mat = glm::rotate(mat, theta_y, vec3(1.0f, 0.0f, 0.0f));
+
+    GLuint view_loc = glGetUniformLocation(shader_program, "view");
+    glUniformMatrix4fv(view_loc, 1, GL_FALSE, &mat[0][0]);
 }

@@ -6,6 +6,7 @@
 //
 
 #include "window.hpp"
+#include "SDL2/SDL_events.h"
 #include <SDL2/SDL.h>
 #include <iostream>
 
@@ -56,6 +57,8 @@ void changeColor(float R, float G, float B, float A)
  */
 void Window::pollIO(SDL_Event e, bool *running)
 {
+    float dx = 0;
+    float dy = 0;
     while(SDL_PollEvent(&e))
     {
         
@@ -76,13 +79,14 @@ void Window::pollIO(SDL_Event e, bool *running)
                     break;
             }
         }
+        // else if(e.type == SDL_MOUSEMOTION && e.motion.state & SDL_BUTTON_LMASK)
+        // {
+        //     dx += e.motion.x;
+        //     dy += e.motion.y;
+        //     renderer.rotateCamera(dx, dy);
+        // }
         else if(e.type == SDL_MOUSEBUTTONUP)
         {
-            // changeColor((float)(rand() % 100)/100, (float)(rand() % 100)/100, (float)(rand() % 100)/100, window);
-            /* Generate center for sphere of radius=RADIUS so that it stays on screen */
-            //glm::vec3 center = glm::vec3((float)(rand() % 100)/100 * (2 - 2*RADIUS) - (1 - RADIUS), (float)(rand() % 100)/100 * (2 - 2*RADIUS) - (1 - RADIUS), 0.0);
-            //renderer->setCircleCenter(center);
-            
             // Create new circles when mouse is clicked
             // int pixel_x, pixel_y;
             // SDL_GetMouseState(&pixel_x, &pixel_y);
