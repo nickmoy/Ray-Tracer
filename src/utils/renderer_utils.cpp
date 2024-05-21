@@ -1,9 +1,7 @@
 #include "renderer_utils.hpp"
 #include <OpenGL/gltypes.h>
 #include <glm/glm.hpp>
-#include <glm/glm/gtx/rotate_vector.inl>
 #include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_float4x4.hpp>
 #include <glm/mat4x4.hpp>
 #include <iostream>
 #include <fstream>

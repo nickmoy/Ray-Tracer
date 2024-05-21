@@ -48,7 +48,7 @@ void main()
         float brightness = dot(normal, vec3(0.0f, 1.0f, 0.0f));
         if(brightness >= 0)
         {
-            FragColor = color / (1.01f - brightness);
+            FragColor = color;
         }
         else
         {
