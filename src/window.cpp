@@ -7,6 +7,8 @@
 
 #include "window.hpp"
 #include "SDL2/SDL_events.h"
+#include "SDL2/SDL_keycode.h"
+#include "glm/fwd.hpp"
 #include <SDL2/SDL.h>
 #include <iostream>
 
@@ -41,6 +43,8 @@ Window::Window()
     context = SDL_GL_CreateContext(window);
     SDL_UpdateWindowSurface(window);
     SDL_GL_SetSwapInterval(1);
+
+    clicked_at = vec2(768.0f/2, 768.0f/2);
 }
 
 void changeColor(float R, float G, float B, float A)
@@ -57,8 +61,6 @@ void changeColor(float R, float G, float B, float A)
  */
 void Window::pollIO(SDL_Event e, bool *running)
 {
-    float clicked_at_x = 0;
-    float clicked_at_y = 0;
     float moved_to_x = 0;
     float moved_to_y = 0;
     while(SDL_PollEvent(&e))
@@ -87,18 +89,18 @@ void Window::pollIO(SDL_Event e, bool *running)
             // Counts pixels starting from bottom left corner. The way it should be you fuckers!
             moved_to_x += e.motion.x;
             moved_to_y += 768 - e.motion.y;
-            renderer->rotateCamera(moved_to_x - clicked_at_x, moved_to_y - clicked_at_y);
+            renderer->rotateCamera(moved_to_x - clicked_at.x, moved_to_y - clicked_at.y);
             std::cout << "Mouse moved to: (" << moved_to_x << ", " << moved_to_y << ")\n";
-            std::cout << "Rotated by: (" << moved_to_x - clicked_at_x << ", " << moved_to_y - clicked_at_y << ")\n";
-            std::cout << "Last mouse click at: (" << clicked_at_x << ", " << clicked_at_y << ")\n";
+            std::cout << "Rotated by: (" << moved_to_x - clicked_at.x << ", " << moved_to_y - clicked_at.y << ")\n";
+            std::cout << "Last mouse click at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
             std::cout.flush();
         }
         // Only detects the position when the Mouse is JUST Clicked Down
         else if(e.type == SDL_MOUSEBUTTONDOWN)
         {
-            clicked_at_x = e.motion.x;
-            clicked_at_y = 768 - e.motion.y;
-            std::cout << "Mouse just got clicked down at: (" << clicked_at_x << ", " << clicked_at_y << ")\n";
+            clicked_at.x = e.motion.x;
+            clicked_at.y = 768 - e.motion.y;
+            std::cout << "Mouse just got clicked down at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
         }
         // Only detects the position when Mouse Click Ends
         else if(e.type == SDL_MOUSEBUTTONUP)

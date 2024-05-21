@@ -89,19 +89,12 @@ void Renderer::rotateCamera(float dx, float dy)
 }
 
 /*
- * Update the internal view and view_while_moving matrixes so that view contains the "view" matrix
- * at the end of a mouse click
+ * Update the internal view matrix so that view contains the correct "view" matrix
+ * at the end of a mouse click which will then be stored in view_while_moving
  */
 void Renderer::doneRotatingCamera()
 {
-    std::cout << "BEFORE VIEW ADDRESS: " << &view << "\n";
-    std::cout << "BEFORE VIEW_WHILE_MOVING ADDRESS: " << &view_while_moving << "\n";
-    mat4 temp = view;
     view = view_while_moving;
-    view_while_moving = temp;
-    std::cout << "AFTER VIEW ADDRESS: " << &view << "\n";
-    std::cout << "AFTER VIEW_WHILE_MOVING ADDRESS: " << &view_while_moving << "\n";
-    std::cout.flush();
 }
 
 

@@ -12,6 +12,7 @@
 
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
+#include <glm/glm.hpp>
 
 #include "renderer.hpp"
 
@@ -20,8 +21,7 @@ class Window
 {
 
 private:
-    glm::vec3 mouse_pressed_pos;
-    glm::vec3 mouse_released_pos;
+    glm::vec2 clicked_at;
     
 public:
     SDL_Window *window;
