@@ -57,8 +57,10 @@ void changeColor(float R, float G, float B, float A)
  */
 void Window::pollIO(SDL_Event e, bool *running)
 {
-    float dx = 0;
-    float dy = 0;
+    float clicked_at_x = 0;
+    float clicked_at_y = 0;
+    float moved_to_x = 0;
+    float moved_to_y = 0;
     while(SDL_PollEvent(&e))
     {
         
@@ -79,14 +81,31 @@ void Window::pollIO(SDL_Event e, bool *running)
                     break;
             }
         }
-        // else if(e.type == SDL_MOUSEMOTION && e.motion.state & SDL_BUTTON_LMASK)
-        // {
-        //     dx += e.motion.x;
-        //     dy += e.motion.y;
-        //     renderer.rotateCamera(dx, dy);
-        // }
+        // Only detects the position when the Mouse is Moved
+        else if(e.type == SDL_MOUSEMOTION && e.motion.state & SDL_BUTTON_LMASK)
+        {
+            // Counts pixels starting from bottom left corner. The way it should be you fuckers!
+            moved_to_x += e.motion.x;
+            moved_to_y += 768 - e.motion.y;
+            renderer->rotateCamera(moved_to_x - clicked_at_x, moved_to_y - clicked_at_y);
+            std::cout << "Mouse moved to: (" << moved_to_x << ", " << moved_to_y << ")\n";
+            std::cout << "Rotated by: (" << moved_to_x - clicked_at_x << ", " << moved_to_y - clicked_at_y << ")\n";
+            std::cout << "Last mouse click at: (" << clicked_at_x << ", " << clicked_at_y << ")\n";
+            std::cout.flush();
+        }
+        // Only detects the position when the Mouse is JUST Clicked Down
+        else if(e.type == SDL_MOUSEBUTTONDOWN)
+        {
+            clicked_at_x = e.motion.x;
+            clicked_at_y = 768 - e.motion.y;
+            std::cout << "Mouse just got clicked down at: (" << clicked_at_x << ", " << clicked_at_y << ")\n";
+        }
+        // Only detects the position when Mouse Click Ends
         else if(e.type == SDL_MOUSEBUTTONUP)
         {
+            std::cout << "Mouse clicked ended at: (" << e.motion.x << ", " << 768 - e.motion.y << ")\n";
+            std::cout.flush();
+            renderer->doneRotatingCamera();
             // Create new circles when mouse is clicked
             // int pixel_x, pixel_y;
             // SDL_GetMouseState(&pixel_x, &pixel_y);

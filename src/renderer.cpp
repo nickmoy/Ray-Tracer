@@ -6,6 +6,7 @@
 //
 
 #include "renderer.hpp"
+#include "utils/renderer_utils.hpp"
 #include <glm/mat4x4.hpp>
 #include <iostream>
 
@@ -22,6 +23,7 @@ Renderer::Renderer()
         vec3(-1.0f, 1.0f, 0.0f),
     };
     view = mat4(1.0f);
+    view_while_moving = mat4(1.0f);
 
     initBuffers();
     initShaders(vert_shader, "Shaders/scene.vert", frag_shader, "Shaders/ray_tracer.frag", shader_program);
@@ -78,12 +80,28 @@ void Renderer::initBuffers()
 }
 
 /*
- * Rotate the camera based on the change in pixels from the last mouse position
+ * Rotate the camera during a mouse movement based on the change in pixels from the last mouse position
  * measured in pixels
  */
 void Renderer::rotateCamera(float dx, float dy)
 {
-    
+    setViewMatrix(shader_program, view, view_while_moving, dx, dy);
+}
+
+/*
+ * Update the internal view and view_while_moving matrixes so that view contains the "view" matrix
+ * at the end of a mouse click
+ */
+void Renderer::doneRotatingCamera()
+{
+    std::cout << "BEFORE VIEW ADDRESS: " << &view << "\n";
+    std::cout << "BEFORE VIEW_WHILE_MOVING ADDRESS: " << &view_while_moving << "\n";
+    mat4 temp = view;
+    view = view_while_moving;
+    view_while_moving = temp;
+    std::cout << "AFTER VIEW ADDRESS: " << &view << "\n";
+    std::cout << "AFTER VIEW_WHILE_MOVING ADDRESS: " << &view_while_moving << "\n";
+    std::cout.flush();
 }
 
 

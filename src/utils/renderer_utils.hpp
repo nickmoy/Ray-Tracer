@@ -19,7 +19,7 @@ void setColor(GLuint shader_program, glm::vec4 color);
 glm::vec4 randomColor();
 void setCircleCenter(GLuint shader_program, glm::vec3 center);
 void setCameraPos(GLuint shader_program, glm::vec3 camera_pos);
-void setViewMatrix(GLuint shader_program, glm::mat4 &mat, float dx, float y);
+void setViewMatrix(GLuint shader_program, glm::mat4 &view, glm::mat4 &view_while_moving, float dx, float dy);
 glm::mat4 getViewMatrix(glm::vec3 aPos);
 
 

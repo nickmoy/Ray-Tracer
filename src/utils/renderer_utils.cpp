@@ -155,17 +155,17 @@ void setCameraPos(GLuint shader_program, vec3 camera_pos)
 }
 
 /*
- * Set uniform "view" in frag shader by rotating everything around origin
+ * Set uniform "view" matrix in frag shader by rotating everything around origin
  * @param dx,dy: The movement of the mouse in pixels
  */
-void setViewMatrix(GLuint shader_program, mat4 &mat, float dx, float dy)
+void setViewMatrix(GLuint shader_program, mat4 &view, mat4 &view_while_moving, float dx, float dy)
 {
-    float theta_x = (dx/768 * 2.0f - 1.0f) * 2.0f*M_PI*(1.0f/4.0f);
-    float theta_y = (dy/768 * 2.0f - 1.0f) * 2.0f*M_PI*(1.0f/4.0f);
+    float theta_x = -(dx/768) * 2.0f*M_PI*(1.0f/4.0f);
+    float theta_y = (dy/768) * 2.0f*M_PI*(1.0f/4.0f);
 
-    mat = glm::rotate(mat, theta_x, vec3(0.0f, 1.0f, 0.0f));
-    mat = glm::rotate(mat, theta_y, vec3(1.0f, 0.0f, 0.0f));
+    view_while_moving = glm::rotate(view, theta_x, vec3(0.0f, 1.0f, 0.0f));
+    view_while_moving = glm::rotate(view_while_moving, theta_y, vec3(1.0f, 0.0f, 0.0f));
 
     GLuint view_loc = glGetUniformLocation(shader_program, "view");
-    glUniformMatrix4fv(view_loc, 1, GL_FALSE, &mat[0][0]);
+    glUniformMatrix4fv(view_loc, 1, GL_FALSE, &view_while_moving[0][0]);
 }

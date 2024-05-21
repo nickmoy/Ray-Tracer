@@ -42,6 +42,7 @@ class Renderer
 
     glm::vec3 *square_vertices;
     glm::mat4 view;
+    glm::mat4 view_while_moving;
     
 public:
     // Physics engine
@@ -58,6 +59,7 @@ public:
 
     // Rendering Math
     void rotateCamera(float dx, float dy);
+    void doneRotatingCamera();
 };
 
 
