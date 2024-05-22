@@ -1,7 +1,6 @@
 #ifndef renderer_utils_hpp
 #define renderer_utils_hpp
 
-#include <string>
 #include <OpenGL/gl3.h>
 #include <glm/glm.hpp>
 #include <string>

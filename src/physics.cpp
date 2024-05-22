@@ -9,6 +9,7 @@
 
 using namespace glm;
 
+
 Sphere::Sphere(vec2 pos)
 {
     current_pos = pos;

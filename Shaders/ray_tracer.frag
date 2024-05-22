@@ -5,7 +5,7 @@
 layout(location = 0) out vec4 FragColor;
 uniform vec3 camera_pos = vec3(0.0f, 0.0f, 0.0f);
 uniform float RADIUS = 0.5f;
-uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 0.0f);
+uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
 uniform mat4 view = mat4(1.0f);
 
 
@@ -21,13 +21,12 @@ void main()
     uv.z = camera_pos.z - 1.0f;
 
     vec3 ray = uv - camera_pos;
-    ray = normalize(ray);
-
     vec3 sphere_center = (view * center).xyz;
 
     float a = dot(ray, ray);
     float b = 2.0f * dot(camera_pos, ray) - 2.0f * dot(sphere_center, ray);
-    float c = dot(camera_pos, camera_pos) + dot(sphere_center, sphere_center) - RADIUS*RADIUS;
+    float c = dot(camera_pos, camera_pos) + dot(sphere_center, sphere_center)
+                - 2.0f * dot(camera_pos, sphere_center) - RADIUS*RADIUS;
 
     float det = b*b - 4.0f*a*c;
 
@@ -43,21 +42,24 @@ void main()
         // Using the normal vector
         vec4 color = vec4(0.0f, 0.5f, 0.5f, 1.0f);
 
-        float t_hit = (-b + sqrt(det)) / (2*a);
-        vec3 hit_point = ray * t_hit;
-        vec3 normal = (hit_point - sphere_center) / RADIUS;
+        float t_hit = (-b - sqrt(det)) / (2*a);
+        vec3 hit_point = camera_pos + ray * t_hit;
+        vec3 normal = normalize(hit_point - sphere_center);
         // Detect if normal vector is pointing up or down
-        float brightness = dot(normal, vec3(0.0f, 1.0f, 0.0f));
+        vec4 sky = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+        float brightness = max(dot(normal, sky.xyz), 0);
+
         if(t_hit > 0)
         {
-            if(brightness >= 0)
-            {
-                FragColor = vec4(1.0f) - ((vec4(1.0f) - color) * smoothClamp(1.0f - brightness, BRIGHTNESS_COEFF, 1.0f));
-            }
-            else
-            {
-                FragColor = color * (1.0f - abs(brightness));
-            }
+            FragColor = vec4(normal * 0.5f + 0.5f, 1.0f) * brightness;
+            // if(brightness >= 0)
+            // {
+            //     FragColor = vec4(1.0f) - ((vec4(1.0f) - color) * smoothClamp(1.0f - brightness, BRIGHTNESS_COEFF, 1.0f));
+            // }
+            // else
+            // {
+            //     FragColor = color * (1.0f - abs(brightness));
+            // }
         }
         else{
             // Background color Light Gray

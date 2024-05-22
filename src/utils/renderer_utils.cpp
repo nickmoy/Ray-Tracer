@@ -1,8 +1,5 @@
 #include "renderer_utils.hpp"
-#include <OpenGL/gltypes.h>
-#include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include <glm/mat4x4.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>

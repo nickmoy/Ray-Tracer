@@ -7,7 +7,6 @@
 
 #include "renderer.hpp"
 #include "utils/renderer_utils.hpp"
-#include <glm/mat4x4.hpp>
 #include <iostream>
 
 using namespace glm;
