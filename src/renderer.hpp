@@ -50,6 +50,7 @@ public:
 
     //Initialization
     Renderer();
+    ~Renderer();
     void addPhysics(Physics *_physics);
     void initBuffers();
 

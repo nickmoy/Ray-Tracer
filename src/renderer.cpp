@@ -29,6 +29,12 @@ Renderer::Renderer()
     initShaders(vert_shader, "Shaders/scene.vert", frag_shader, "Shaders/ray_tracer.frag", shader_program);
 }
 
+Renderer::~Renderer()
+{
+    delete square_vertices;
+    square_vertices = nullptr;
+}
+
 /*
  * Render to screen by drawing a quad (two triangles over the whole screen)
  * and then calculating the color of each pixel in fragment shader using
@@ -57,26 +63,6 @@ void Renderer::initBuffers()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-
-    // // Generate buffers
-    // glGenBuffers(2, VBO);
-    // glGenVertexArrays(2, VAO);
-    // 
-    // // 1st Buffer containing vertices for outer circle stage
-    // glBindVertexArray(VAO[0]);
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    // // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*(circle_vertices.size()), &circle_vertices[0], GL_STATIC_READ);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    // 
-    // glEnableVertexAttribArray(0);
-    // 
-    // // 2nd Buffer containing quads for each circle object
-    // glBindVertexArray(VAO[1]);
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    // // glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*4, &square_vertices[0], GL_STATIC_READ);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    // glEnableVertexAttribArray(0);
 }
 
 /*
