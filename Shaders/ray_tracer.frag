@@ -6,22 +6,21 @@ layout(location = 0) out vec4 FragColor;
 uniform vec3 camera_pos = vec3(0.0f, 0.0f, 0.0f);
 uniform float RADIUS = 0.5f;
 uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
-uniform mat4 view = mat4(1.0f);
+uniform mat4 rotation = mat4(1.0f);
 
 
-bool collideWithSphere(float a, float b, float c);
 float smoothClamp(float x, float a, float b);
 float rand(vec2 co);
 
 void main()
 {
     vec3 uv = (gl_FragCoord.xyz/768) * 2 - 1;
+    uv.xy *= 0.5;
     // Always set the ray to be shot a z-distance of -1 from the camera
-    uv.xy += camera_pos.xy;
-    uv.z = camera_pos.z - 1.0f;
+    uv.z = -1.0f;
 
-    vec3 ray = uv - camera_pos;
-    vec3 sphere_center = (view * center).xyz;
+    vec3 ray = uv;
+    vec3 sphere_center = (rotation * center).xyz;
 
     float a = dot(ray, ray);
     float b = 2.0f * dot(camera_pos, ray) - 2.0f * dot(sphere_center, ray);
@@ -43,7 +42,7 @@ void main()
         vec4 color = vec4(0.0f, 0.5f, 0.5f, 1.0f);
 
         float t_hit = (-b - sqrt(det)) / (2*a);
-        vec3 hit_point = camera_pos + ray * t_hit;
+        vec3 hit_point = camera_pos + (ray * t_hit);
         vec3 normal = normalize(hit_point - sphere_center);
         // Detect if normal vector is pointing up or down
         vec4 sky = vec4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -52,14 +51,6 @@ void main()
         if(t_hit > 0)
         {
             FragColor = vec4(normal * 0.5f + 0.5f, 1.0f) * brightness;
-            // if(brightness >= 0)
-            // {
-            //     FragColor = vec4(1.0f) - ((vec4(1.0f) - color) * smoothClamp(1.0f - brightness, BRIGHTNESS_COEFF, 1.0f));
-            // }
-            // else
-            // {
-            //     FragColor = color * (1.0f - abs(brightness));
-            // }
         }
         else{
             // Background color Light Gray
@@ -84,17 +75,4 @@ float smoothClamp(float x, float a, float b)
 
 float rand(vec2 co){
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
-bool collideWithSphere(float a, float b, float c)
-{
-    
-    // Quadratic formula thing
-    // 
-    float det = b*b - 4.0f*a*c;
-    if(det < 0)
-    {
-        return false;
-    }
-    return true;
 }

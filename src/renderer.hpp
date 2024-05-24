@@ -41,8 +41,8 @@ class Renderer
     GLuint shader_program = -1;
 
     glm::vec3 *square_vertices;
-    glm::mat4 view;
-    glm::mat4 view_while_moving;
+    glm::mat4 rotation;
+    glm::mat4 rotation_while_moving;
 
     glm::vec3 camera_pos;
     
@@ -63,7 +63,6 @@ public:
     // Rendering Math
     void rotateCamera(float dx, float dy);
     void doneRotatingCamera();
-    void setCameraPos(float dx, float dy);
 };
 
 

@@ -21,8 +21,8 @@ Renderer::Renderer()
         vec3(1.0f, 1.0f, 0.0f),
         vec3(-1.0f, 1.0f, 0.0f),
     };
-    view = mat4(1.0f);
-    view_while_moving = mat4(1.0f);
+    rotation = mat4(1.0f);
+    rotation_while_moving = mat4(1.0f);
 
     initBuffers();
     initShaders(vert_shader, "Shaders/scene.vert", frag_shader, "Shaders/ray_tracer.frag", shader_program);
@@ -70,16 +70,16 @@ void Renderer::initBuffers()
  */
 void Renderer::rotateCamera(float dx, float dy)
 {
-    setViewMatrix(shader_program, view, view_while_moving, dx, dy);
+    setRotationMatrix(shader_program, rotation, rotation_while_moving, dx, dy);
 }
 
 /*
- * Update the internal view matrix so that view contains the correct "view" matrix
- * at the end of a mouse click which will then be stored in view_while_moving
+ * Update the internal rotation matrix so that rotation contains the correct "rotation" matrix
+ * at the end of a mouse click which will then be stored in rotation_while_moving
  */
 void Renderer::doneRotatingCamera()
 {
-    view = view_while_moving;
+    rotation = rotation_while_moving;
 }
 
 
