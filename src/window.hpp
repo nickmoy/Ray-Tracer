@@ -1,6 +1,6 @@
 //
 //  window.h
-//  VerletIntegration
+//  RayTracer
 //
 //  Created by Nicholas Moy on 4/10/24.
 //

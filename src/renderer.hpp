@@ -1,6 +1,6 @@
 //
 //  renderer.hpp
-//  VerletIntegration
+//  RayTracer
 //
 //  Created by Nicholas Moy on 4/6/24.
 //
@@ -21,6 +21,7 @@
 
 #include "physics.hpp"
 #include "utils/renderer_utils.hpp"
+#include "camera.hpp"
 
 #define NUM_VERTICES 256
 #define SCREEN_W 768
@@ -45,6 +46,7 @@ class Renderer
     glm::mat4 rotation_while_moving;
 
     glm::vec3 camera_pos;
+    // Camera camera;
     
 public:
     // Physics engine

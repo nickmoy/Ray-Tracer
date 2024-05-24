@@ -1,6 +1,6 @@
 //
 //  renderer.cpp
-//  VerletIntegration
+//  RayTracer
 //
 //  Created by Nicholas Moy on 4/6/24.
 //
@@ -23,6 +23,7 @@ Renderer::Renderer()
     };
     rotation = mat4(1.0f);
     rotation_while_moving = mat4(1.0f);
+    // Camera camera = Camera(45.0f, 0.1f, 100.0f);
 
     initBuffers();
     initShaders(vert_shader, "Shaders/scene.vert", frag_shader, "Shaders/ray_tracer.frag", shader_program);

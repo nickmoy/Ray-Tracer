@@ -1,6 +1,6 @@
 //
 //  physics.cpp
-//  VerletIntegration
+//  RayTracer
 //
 //  Created by Nicholas Moy on 3/31/24.
 //
