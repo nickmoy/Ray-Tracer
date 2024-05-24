@@ -14,8 +14,8 @@ float rand(vec2 co);
 
 void main()
 {
-    vec3 uv = (gl_FragCoord.xyz/768) * 2 - 1;
-    uv.xy *= 0.5;
+    vec3 uv = (gl_FragCoord.xyz/768.0f) * 2.0f - 1.0f;
+    uv.xy /= 2.0f;
     // Always set the ray to be shot a z-distance of -1 from the camera
     uv.z = -1.0f;
 
@@ -45,8 +45,8 @@ void main()
         vec3 hit_point = camera_pos + (ray * t_hit);
         vec3 normal = normalize(hit_point - sphere_center);
         // Detect if normal vector is pointing up or down
-        vec4 sky = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-        float brightness = max(dot(normal, sky.xyz), 0);
+        vec3 sky = vec3(0.0f, 1.0f, 0.0f);
+        float brightness = max(dot(normal, sky), 0);
 
         if(t_hit > 0)
         {
