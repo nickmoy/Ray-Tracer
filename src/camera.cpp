@@ -1,11 +1,8 @@
 #include "camera.hpp"
-#include "glm/matrix.hpp"
-#include "utils/renderer_utils.hpp"
 #include <glm/ext/matrix_transform.hpp> // This glm library has the rotation view_matrix
 #include <glm/ext/matrix_clip_space.hpp> // This glm library has the perspective(frustum) view_matrix
 #include <glm/gtx/rotate_vector.hpp> // This glm library has the rotate(vector) function
 #include <math.h>
-#include <iostream>
 
 using namespace glm;
 
@@ -24,7 +21,6 @@ Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_cl
     far_clip = _far_clip;
 
     translateCamera(0, 0);
-    print4x4Matrix(view_matrix);
 }
 
 void Camera::rotateCamera(float dx, float dy)

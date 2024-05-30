@@ -75,6 +75,9 @@ void Renderer::setUniforms()
 
     GLuint rotation = glGetUniformLocation(shader_program, "rotation");
     glUniformMatrix4fv(rotation, 1, GL_FALSE, &camera.rotation_matrix[0][0]);
+
+    GLuint fovy = glGetUniformLocation(shader_program, "fovy");
+    glUniform1f(fovy, camera.fovy);
 }
 
 /*

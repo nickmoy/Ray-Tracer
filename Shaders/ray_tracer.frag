@@ -8,6 +8,7 @@ uniform float RADIUS = 0.5f;
 uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
 uniform mat4 rotation = mat4(1.0f);
 uniform mat4 view = mat4(1.0f);
+uniform float fovy;
 
 
 float smoothClamp(float x, float a, float b);
@@ -17,7 +18,7 @@ void main()
 {
     vec3 uv = (gl_FragCoord.xyz/768.0f) * 2.0f - 1.0f;
     // Divide by value of 90/fovy
-    uv.xy /= 2.0f;
+    uv.xy /= 90.0f/fovy;
     // Always set the ray to be shot a z-dist of -1 from the camera
     uv.z = -1.0f;
 
