@@ -141,27 +141,8 @@ void setCircleCenter(GLuint shader_program, vec3 center)
     glUniform3f(center_location, center.x, center.y, center.z);
 }
 
-/*
- * Set uniform "camera_pos" in vert shader
- */
-void setCameraPos(GLuint shader_program, vec3 camera_pos)
+void print4x4Matrix(float **matrix)
 {
-    GLuint camera_pos_loc = glGetUniformLocation(shader_program, "camera_pos");
-    glUniform3f(camera_pos_loc, camera_pos.x, camera_pos.y, camera_pos.z);
-}
+    std::cout << matrix[0][0] << ", " << matrix[0][1] << ", " << matrix[0][2] << ", " << matrix[0][3];
 
-/*
- * Set uniform "rotation" matrix in frag shader by rotating everything around origin
- * @param dx,dy: The movement of the mouse in pixels
- */
-void setRotationMatrix(GLuint shader_program, mat4 &rotation, mat4 &rotation_while_moving, float dx, float dy)
-{
-    float theta_x = -(dx/768) * 2.0f*M_PI*(1.0f/8.0f);
-    float theta_y = (dy/768) * 2.0f*M_PI*(1.0f/8.0f);
-
-    rotation_while_moving = glm::rotate(rotation, theta_x, vec3(0.0f, 1.0f, 0.0f));
-    rotation_while_moving = glm::rotate(rotation_while_moving, theta_y, vec3(1.0f, 0.0f, 0.0f));
-
-    GLuint rotation_loc = glGetUniformLocation(shader_program, "rotation");
-    glUniformMatrix4fv(rotation_loc, 1, GL_FALSE, &rotation_while_moving[0][0]);
 }

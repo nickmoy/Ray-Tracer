@@ -33,6 +33,7 @@ class Renderer
     // Buffer objects
     GLuint VBO = -1;
     GLuint VAO = -1;
+    GLuint UBO = -1;
 
     // glm::vec4 pixels[SCREEN_W][SCREEN_H];
     
@@ -46,11 +47,11 @@ class Renderer
     glm::mat4 rotation_while_moving;
 
     glm::vec3 camera_pos;
-    // Camera camera;
     
 public:
     // Physics engine
     Physics *physics;
+    Camera camera = Camera(45.0f, 1.0f, 0.1f, 100.0f);
 
     //Initialization
     Renderer();
@@ -60,6 +61,7 @@ public:
 
     // Rendering
     void render();
+    void setUniforms();
     float* buildSquareVertices();
 
     // Rendering Math

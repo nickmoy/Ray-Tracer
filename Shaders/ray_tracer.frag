@@ -3,10 +3,11 @@
 #define BRIGHTNESS_COEFF 0.7
 
 layout(location = 0) out vec4 FragColor;
-uniform vec3 camera_pos = vec3(0.0f, 0.0f, 0.0f);
+// uniform vec3 camera_pos = vec3(0.0f, 0.0f, 0.0f);
 uniform float RADIUS = 0.5f;
 uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
 uniform mat4 rotation = mat4(1.0f);
+uniform mat4 view = mat4(1.0f);
 
 
 float smoothClamp(float x, float a, float b);
@@ -21,12 +22,11 @@ void main()
     uv.z = -1.0f;
 
     vec3 ray = uv;
-    vec3 sphere_center = (rotation * center).xyz;
+    vec3 sphere_center = (view * rotation * center).xyz;
 
     float a = dot(ray, ray);
-    float b = 2.0f * dot(camera_pos, ray) - 2.0f * dot(sphere_center, ray);
-    float c = dot(camera_pos, camera_pos) + dot(sphere_center, sphere_center)
-                - 2.0f * dot(camera_pos, sphere_center) - RADIUS*RADIUS;
+    float b = - 2.0f * dot(sphere_center, ray);
+    float c = dot(sphere_center, sphere_center) - RADIUS*RADIUS;
 
     float det = b*b - 4.0f*a*c;
 
@@ -38,12 +38,8 @@ void main()
     }
     else
     {
-        // Color the pixel as if there was skybox lighting from above
-        // Using the normal vector
-        vec4 color = vec4(0.0f, 0.5f, 0.5f, 1.0f);
-
         float t_hit = (-b - sqrt(det)) / (2*a);
-        vec3 hit_point = camera_pos + (ray * t_hit);
+        vec3 hit_point = ray * t_hit;
         vec3 normal = normalize(hit_point - sphere_center);
         // Detect if normal vector is pointing up or down
         vec3 sky = vec3(0.0f, 1.0f, 0.0f);

@@ -26,13 +26,8 @@
 
 class Camera
 {
-    glm::mat4 rotation{1.0f};
-    glm::mat4 rotation_while_moving{1.0f};
-
-    glm::mat4 view_matrix{1.0f};
-
-    glm::vec3 position{0.0f, 0.0f, 2.0f};
-    glm::vec3 direction{0.0f, 0.0f, -1.0f}; // Unit vector centered at origin
+    glm::vec3 position{0.0f, 0.0f, 3.0f};
+    glm::vec3 direction{0.0f, -1.0f, 0.0f}; // Unit vector centered at origin
 
     float fovy;
     float aspect_ratio;
@@ -42,13 +37,17 @@ class Camera
     float speed;
     
 public:
+    glm::mat4 rotation_reference_matrix{1.0f};
+    glm::mat4 rotation_matrix{1.0f};
+
+    glm::mat4 view_matrix{1.0f};
+
     // Initialization
     Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_clip);
 
     void rotateCamera(float dx, float dy);
     void translateCamera(float dx, float dy);
-    
-    glm::mat4 getViewMatrix();
+    void doneRotating();
 };
 
 

@@ -1,6 +1,6 @@
 EXE = play.out
 SOURCES = src/*.cpp
-OBJS = build/main.o build/window.o build/renderer.o build/physics.o build/utils/renderer_utils.o
+OBJS = build/main.o build/window.o build/renderer.o build/physics.o build/camera.o build/utils/renderer_utils.o
 
 IMGUI_DIR = 
 # SOURCES = src/*.cpp

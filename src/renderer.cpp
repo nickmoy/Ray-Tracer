@@ -23,7 +23,6 @@ Renderer::Renderer()
     };
     rotation = mat4(1.0f);
     rotation_while_moving = mat4(1.0f);
-    // Camera camera = Camera(45.0f, 0.1f, 100.0f);
 
     initBuffers();
     initShaders(vert_shader, "Shaders/scene.vert", frag_shader, "Shaders/ray_tracer.frag", shader_program);
@@ -44,6 +43,7 @@ void Renderer::render()
 {
     glBindVertexArray(VAO);
     // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLuint)square_vertices->length()-2);
+    setUniforms();
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
@@ -66,23 +66,16 @@ void Renderer::initBuffers()
 }
 
 /*
- * Rotate the camera during a mouse movement based on the change in pixels from the last mouse position
- * measured in pixels
+ * Set uniforms for view and rotation matrix from camera object
  */
-void Renderer::rotateCamera(float dx, float dy)
+void Renderer::setUniforms()
 {
-    setRotationMatrix(shader_program, rotation, rotation_while_moving, dx, dy);
-}
+    GLuint view = glGetUniformLocation(shader_program, "view");
+    glUniformMatrix4fv(view, 1, GL_FALSE, &camera.view_matrix[0][0]);
 
-/*
- * Update the internal rotation matrix so that rotation contains the correct "rotation" matrix
- * at the end of a mouse click which will then be stored in rotation_while_moving
- */
-void Renderer::doneRotatingCamera()
-{
-    rotation = rotation_while_moving;
+    GLuint rotation = glGetUniformLocation(shader_program, "rotation");
+    glUniformMatrix4fv(rotation, 1, GL_FALSE, &camera.rotation_matrix[0][0]);
 }
-
 
 /*
  * Adds physics object to renderer.

@@ -86,10 +86,11 @@ void Window::pollIO(SDL_Event e, bool *running)
         // Only detects the position when the Mouse is Moved
         else if(e.type == SDL_MOUSEMOTION && e.motion.state & SDL_BUTTON_LMASK)
         {
-            // Counts pixels starting from bottom left corner. The way it should be you fuckers!
+            // Counts pixels starting from bottom left corner. The way it should be, you fuckers!
             moved_to_x += e.motion.x;
             moved_to_y += 768 - e.motion.y;
-            renderer->rotateCamera(moved_to_x - clicked_at.x, moved_to_y - clicked_at.y);
+            renderer->camera.rotateCamera(moved_to_x - clicked_at.x, moved_to_y - clicked_at.y);
+
             // std::cout << "Mouse moved to: (" << moved_to_x << ", " << moved_to_y << ")\n";
             // std::cout << "Rotated by: (" << moved_to_x - clicked_at.x << ", " << moved_to_y - clicked_at.y << ")\n";
             // std::cout << "Last mouse click at: (" << clicked_at.x << ", " << clicked_at.y << ")\n";
@@ -107,7 +108,8 @@ void Window::pollIO(SDL_Event e, bool *running)
         {
             // std::cout << "Mouse clicked ended at: (" << e.motion.x << ", " << 768 - e.motion.y << ")\n";
             // std::cout.flush();
-            renderer->doneRotatingCamera();
+            renderer->camera.doneRotating();
+
             // Create new circles when mouse is clicked
             // int pixel_x, pixel_y;
             // SDL_GetMouseState(&pixel_x, &pixel_y);
