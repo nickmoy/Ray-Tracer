@@ -45,6 +45,10 @@ venv
 *.dylib
 *.dll
 
+# Include Headers
+Include/SDL2/
+Include/glm/
+
 # Fortran module files
 *.mod
 *.smod
