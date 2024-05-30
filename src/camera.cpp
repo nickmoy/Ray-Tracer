@@ -24,6 +24,7 @@ Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_cl
     far_clip = _far_clip;
 
     translateCamera(0, 0);
+    print4x4Matrix(view_matrix);
 }
 
 void Camera::rotateCamera(float dx, float dy)

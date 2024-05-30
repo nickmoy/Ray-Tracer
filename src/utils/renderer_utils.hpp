@@ -18,7 +18,7 @@ void setColor(GLuint shader_program, glm::vec4 color);
 glm::vec4 randomColor();
 void setCircleCenter(GLuint shader_program, glm::vec3 center);
 void setRotationMatrix(GLuint shader_program, glm::mat4 &rotation, glm::mat4 &rotation_while_moving, float dx, float dy);
-void print4x4Matrix(float **matrix);
+void print4x4Matrix(glm::mat4 &matrix);
 
 
 #endif /* renderer_utils.hpp */

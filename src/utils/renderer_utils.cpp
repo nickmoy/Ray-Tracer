@@ -141,8 +141,11 @@ void setCircleCenter(GLuint shader_program, vec3 center)
     glUniform3f(center_location, center.x, center.y, center.z);
 }
 
-void print4x4Matrix(float **matrix)
+void print4x4Matrix(mat4 &matrix)
 {
-    std::cout << matrix[0][0] << ", " << matrix[0][1] << ", " << matrix[0][2] << ", " << matrix[0][3];
-
+    std::cout << matrix[0][0] << ", " << matrix[1][0] << ", " << matrix[2][0] << ", " << matrix[3][0] << "\n";
+    std::cout << matrix[0][1] << ", " << matrix[1][1] << ", " << matrix[2][1] << ", " << matrix[3][1] << "\n";
+    std::cout << matrix[0][2] << ", " << matrix[1][2] << ", " << matrix[2][2] << ", " << matrix[3][2] << "\n";
+    std::cout << matrix[0][3] << ", " << matrix[1][3] << ", " << matrix[2][3] << ", " << matrix[3][3] << "\n";
+    std::cout.flush();
 }
