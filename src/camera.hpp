@@ -35,14 +35,15 @@ class Camera
     glm::vec3 direction{0.0f, 0.0f, -1.0f}; // Unit vector centered at origin
 
     float fovy;
-    float nearClip;
-    float farClip;
+    float aspect_ratio;
+    float near_clip;
+    float far_clip;
 
     float speed;
     
 public:
     // Initialization
-    Camera(float _fovy, float _nearClip, float _farClip);
+    Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_clip);
 
     void rotateCamera(float dx, float dy);
     void translateCamera(float dx, float dy);

@@ -25,7 +25,7 @@ Window::Window()
         std::cout << "SDL Error: " << SDL_GetError() << "\n";
     }
     
-    window = SDL_CreateWindow("Verlet Integration", SDL_WINDOWPOS_CENTERED,
+    window = SDL_CreateWindow("Ray Tracer", SDL_WINDOWPOS_CENTERED,
                                             SDL_WINDOWPOS_CENTERED,
                                             768, 768,
                                             SDL_WINDOW_OPENGL);

@@ -15,8 +15,9 @@ float rand(vec2 co);
 void main()
 {
     vec3 uv = (gl_FragCoord.xyz/768.0f) * 2.0f - 1.0f;
+    // Divide by value of 90/fovy
     uv.xy /= 2.0f;
-    // Always set the ray to be shot a z-distance of -1 from the camera
+    // Always set the ray to be shot a z-dist of -1 from the camera
     uv.z = -1.0f;
 
     vec3 ray = uv;
@@ -55,13 +56,6 @@ void main()
         else{
             // Background color Light Gray
             FragColor = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0);
-
-            // I think if FragColor is never set, OpenGL or maybe the graphics driver instead does
-            // some weird thing where it just guesses what you wanted and uses code somewhere else
-            // to pick a color because when I set FragColor in the else statement and the sphere
-            // is behind me, it still shows up in front of me just flipped uptside down, so my
-            // only explanation is that somehow it's like using the code in the if statement before
-            // it although I don't know how it chooses what to render there, though.
         }
     }
 

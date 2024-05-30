@@ -1,5 +1,4 @@
 #include "camera.hpp"
-#include <cmath>
 #include <glm/ext/matrix_transform.hpp> // This glm library has the rotation matrix
 #include <glm/ext/matrix_clip_space.hpp> // This glm library has the perspective(frustum) matrix
 #include <glm/gtx/rotate_vector.hpp>
@@ -13,11 +12,12 @@ using namespace glm;
  * @param nearClip is the beginning of frustum
  * @param farClilp is the end of frustum
  */
-Camera::Camera(float _fovy, float _nearClip, float _farClip)
+Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_clip)
 {
     fovy = _fovy;
-    nearClip = _nearClip;
-    farClip = _farClip;
+    aspect_ratio = _aspect_ratio;
+    near_clip = _near_clip;
+    far_clip = _far_clip;
 }
 
 void Camera::rotateCamera(float dx, float dy)
@@ -39,4 +39,9 @@ void Camera::translateCamera(float dx, float dy)
     float t_y = ((dy/768.0f) * 2.0f - 1.0f) * speed;
 
     direction += t_x * right + t_y * up;
+}
+
+mat4 Camera::getViewMatrix()
+{
+
 }
