@@ -33,7 +33,6 @@ void main()
 
     if(det < 0)
     {
-        // No hit so we set to background color Light Gray
         // vec4 Light_Gray = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0)
         FragColor = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0);
     }
@@ -42,7 +41,6 @@ void main()
         float t_hit = (-b - sqrt(det)) / (2*a);
         vec3 hit_point = ray * t_hit;
         vec3 normal = normalize(hit_point - sphere_center);
-        // Detect if normal vector is pointing up or down
         vec3 sky = vec3(0.0f, 1.0f, 0.0f);
         float brightness = max(dot(normal, sky), 0);
 
@@ -51,7 +49,6 @@ void main()
             FragColor = vec4(normal * 0.5f + 0.5f, 1.0f) * brightness;
         }
         else{
-            // Background color Light Gray
             FragColor = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0);
         }
     }
