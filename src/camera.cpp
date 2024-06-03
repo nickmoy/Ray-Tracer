@@ -20,7 +20,9 @@ Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_cl
     near_clip = _near_clip;
     far_clip = _far_clip;
 
-    translateCamera(0, 0);
+    mat4 temp_vm = mat4{1.0f};
+    // For reference, glm::mat4's are an array of column vectors
+    view_matrix = glm::translate(temp_vm, -position);
 }
 
 void Camera::rotateCamera(float dx, float dy)
@@ -32,7 +34,7 @@ void Camera::rotateCamera(float dx, float dy)
     float theta_y = (dy/768.0f) * 2.0f * M_PI/(180.0f/fovy * 2.0f);
 
     direction = rotate(direction, theta_x, up);
-    direction = rotate(direction, theta_y, up);
+    direction = rotate(direction, theta_y, right);
 
     rotation_matrix = glm::rotate(rotation_reference_matrix, theta_x, up);
     rotation_matrix = glm::rotate(rotation_matrix, theta_y, right);
@@ -47,9 +49,6 @@ void Camera::translateCamera(float dx, float dy)
 {
     vec3 up = vec3(-direction.y, direction.x, direction.z);
     vec3 right = vec3(direction.y, -direction.z, direction.y);
-
-    float t_x = (dx/768.0f) * speed;
-    float t_y = (dy/768.0f) * speed;
 
     mat4 temp_vm = mat4{1.0f};
     // For reference, glm::mat4's are an array of column vectors

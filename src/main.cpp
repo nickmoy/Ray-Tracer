@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
 
         if(a < b)
         {
-            // I delay by 2 just b/c it's probably less taxing on the CPU?
             SDL_Delay(1);
         }
         else

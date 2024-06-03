@@ -7,6 +7,7 @@
 
 #include "window.hpp"
 #include "SDL2/SDL_events.h"
+#include "SDL2/SDL_keyboard.h"
 #include "SDL2/SDL_keycode.h"
 #include "glm/fwd.hpp"
 #include <SDL2/SDL.h>
@@ -61,6 +62,12 @@ void changeColor(float R, float G, float B, float A)
  */
 void Window::pollIO(SDL_Event e, bool *running)
 {
+    // const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+    // if(keystate[SDLK_LEFT])
+    // {
+    //     renderer->camera.translateCameraLeft();
+    // }
+
     float moved_to_x = 0;
     float moved_to_y = 0;
     while(SDL_PollEvent(&e))

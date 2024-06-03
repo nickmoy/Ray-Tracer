@@ -8,7 +8,7 @@ layout(location = 0) out vec4 FragColor;
 uniform float RADIUS = 1.0f;
 uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
 
-// #9e5341
+// Light Brown #9e5341
 
 layout (std140) uniform matrices
 {
@@ -55,7 +55,8 @@ void main()
         {
             FragColor = vec4(normal * 0.5f + 0.5f, 1.0f) * brightness;
         }
-        else{
+        else
+        {
             FragColor = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0);
         }
     }
