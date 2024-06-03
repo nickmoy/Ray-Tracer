@@ -42,11 +42,9 @@ class Renderer
     GLuint frag_shader = -1;
     GLuint shader_program = -1;
 
-    glm::vec3 *square_vertices;
+    glm::vec3 square_vertices[4];
     glm::mat4 rotation;
     glm::mat4 rotation_while_moving;
-
-    glm::vec3 camera_pos;
     
 public:
     // Physics engine
@@ -62,7 +60,6 @@ public:
     // Rendering
     void render();
     void setUniforms();
-    float* buildSquareVertices();
 
     // Rendering Math
     void rotateCamera(float dx, float dy);

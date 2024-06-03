@@ -1,14 +1,21 @@
 #version 330 core
 
 #define BRIGHTNESS_COEFF 0.7
+#define M_PI 3.141592653589
 
 layout(location = 0) out vec4 FragColor;
-// uniform vec3 camera_pos = vec3(0.0f, 0.0f, 0.0f);
-uniform float RADIUS = 0.5f;
+
+uniform float RADIUS = 1.0f;
 uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
-uniform mat4 rotation = mat4(1.0f);
-uniform mat4 view = mat4(1.0f);
-uniform float fovy;
+
+// #9e5341
+
+layout (std140) uniform matrices
+{
+    mat4 view;
+    mat4 rotation;
+    float fovy;
+};
 
 
 float smoothClamp(float x, float a, float b);
@@ -18,7 +25,7 @@ void main()
 {
     vec3 uv = (gl_FragCoord.xyz/768.0f) * 2.0f - 1.0f;
     // Divide by value of 90/fovy
-    uv.xy /= 90.0f/fovy;
+    uv.xy *= tan(M_PI * (fovy/2 / 180));
     // Always set the ray to be shot a z-dist of -1 from the camera
     uv.z = -1.0f;
 

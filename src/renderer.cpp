@@ -7,6 +7,7 @@
 
 #include "renderer.hpp"
 #include "utils/renderer_utils.hpp"
+#include "window.hpp"
 #include <iostream>
 
 using namespace glm;
@@ -14,13 +15,11 @@ using namespace glm;
 
 Renderer::Renderer()
 {
-    square_vertices = new vec3[4]
-    {
-        vec3(-1.0f, -1.0f, 0.0f),
-        vec3(1.0f, -1.0f, 0.0f),
-        vec3(1.0f, 1.0f, 0.0f),
-        vec3(-1.0f, 1.0f, 0.0f),
-    };
+    square_vertices[0] = vec3(-1.0f, -1.0f, 0.0f);
+    square_vertices[1] = vec3(1.0f, -1.0f, 0.0f);
+    square_vertices[2] = vec3(1.0f, 1.0f, 0.0f);
+    square_vertices[3] = vec3(-1.0f, 1.0f, 0.0f);
+
     rotation = mat4(1.0f);
     rotation_while_moving = mat4(1.0f);
 
@@ -30,8 +29,8 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-    delete square_vertices;
-    square_vertices = nullptr;
+    // delete square_vertices;
+    // square_vertices = nullptr;
 }
 
 /*
@@ -42,7 +41,6 @@ Renderer::~Renderer()
 void Renderer::render()
 {
     glBindVertexArray(VAO);
-    // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLuint)square_vertices->length()-2);
     setUniforms();
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
@@ -63,6 +61,17 @@ void Renderer::initBuffers()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glGenBuffers(1, &UBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4) + sizeof(float), NULL, GL_DYNAMIC_DRAW);
+
+    GLuint matrices_index = glGetUniformBlockIndex(shader_program, "matrices");
+    // Bind matrices uniform block in shader to index 0
+    glUniformBlockBinding(shader_program, matrices_index, 0);
+
+    // Bind UBO to index 0
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO);
 }
 
 /*
@@ -70,14 +79,11 @@ void Renderer::initBuffers()
  */
 void Renderer::setUniforms()
 {
-    GLuint view = glGetUniformLocation(shader_program, "view");
-    glUniformMatrix4fv(view, 1, GL_FALSE, &camera.view_matrix[0][0]);
-
-    GLuint rotation = glGetUniformLocation(shader_program, "rotation");
-    glUniformMatrix4fv(rotation, 1, GL_FALSE, &camera.rotation_matrix[0][0]);
-
-    GLuint fovy = glGetUniformLocation(shader_program, "fovy");
-    glUniform1f(fovy, camera.fovy);
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), &camera.view_matrix[0][0]);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), &camera.rotation_matrix[0][0]);
+    glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(mat4), sizeof(float), &camera.fovy);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 /*

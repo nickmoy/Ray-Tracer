@@ -109,16 +109,6 @@ void Window::pollIO(SDL_Event e, bool *running)
             // std::cout << "Mouse clicked ended at: (" << e.motion.x << ", " << 768 - e.motion.y << ")\n";
             // std::cout.flush();
             renderer->camera.doneRotating();
-
-            // Create new circles when mouse is clicked
-            // int pixel_x, pixel_y;
-            // SDL_GetMouseState(&pixel_x, &pixel_y);
-            // //std::cout << "(x,y) : " << "(" << pixel_x << ", " << pixel_y << ")" << "\n";
-            // float x = ((float)pixel_x/768) * 2 - 1;
-            // float y = 1 - ((float)pixel_y/768) * 2;
-            // 
-            // Sphere *sphere = new Sphere(vec2(x, y)); /* Need to change sphere constructor here */
-            // renderer->physics->objects.push_back(sphere);
         }
     }
 }
