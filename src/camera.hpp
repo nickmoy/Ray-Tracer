@@ -31,6 +31,8 @@ class Camera
     glm::vec3 direction{0.0f, -1.0f, 0.0f}; // Unit vector centered at origin
     glm::vec3 up{0.0f, 1.0f, 0.0f};
     glm::vec3 right{1.0f, 0.0f, 0.0f};
+    glm::vec3 up_reference{0.0f, 1.0f, 0.0f};
+    glm::vec3 right_reference{1.0f, 0.0f, 0.0f};
     
 public:
     float fovy;

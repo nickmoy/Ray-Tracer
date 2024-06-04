@@ -30,7 +30,7 @@ void main()
     uv.z = -1.0f;
 
     vec3 ray = uv;
-    vec3 sphere_center = (view * rotation * center).xyz;
+    vec3 sphere_center = (rotation * view * center).xyz;
 
     float a = dot(ray, ray);
     float b = - 2.0f * dot(sphere_center, ray);

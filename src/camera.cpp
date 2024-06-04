@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include "glm/matrix.hpp"
 #include <glm/ext/matrix_transform.hpp> // This glm library has the rotation view_matrix
 #include <glm/ext/matrix_clip_space.hpp> // This glm library has the perspective(frustum) view_matrix
 #include <glm/gtx/rotate_vector.hpp> // This glm library has the rotate(vector) function
@@ -27,9 +28,6 @@ Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_cl
 
 void Camera::rotateCamera(float dx, float dy)
 {
-    vec3 up = vec3(0.0f, 1.0f, 0.0f);
-    vec3 right = vec3(1.0f, 0.0f, 0.0f);
-
     float theta_x = -(dx/768.0f) * 2.0f * M_PI/(180.0f/fovy * 2.0f);
     float theta_y = (dy/768.0f) * 2.0f * M_PI/(180.0f/fovy * 2.0f);
 
@@ -38,11 +36,22 @@ void Camera::rotateCamera(float dx, float dy)
 
     rotation_matrix = glm::rotate(rotation_reference_matrix, theta_x, up);
     rotation_matrix = glm::rotate(rotation_matrix, theta_y, right);
+
+    up = rotate(up_reference, -theta_x, up_reference);
+    up = rotate(up, -theta_y, right_reference);
+    right = rotate(right_reference, -theta_x, up_reference);
+    right = rotate(right, -theta_y, right_reference);
+
 }
 
 void Camera::doneRotating()
 {
     rotation_reference_matrix = rotation_matrix;
+    // mat4 reverse = inverse(rotation_matrix);
+    // up = reverse[1];
+    // right = reverse[0];
+    up_reference = up;
+    right_reference = right;
 }
 
 void Camera::translateCamera(float dx, float dy)
