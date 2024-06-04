@@ -20,6 +20,12 @@
 
 #include "utils/renderer_utils.hpp"
 
+#include "glm/matrix.hpp"
+#include <glm/ext/matrix_transform.hpp> // This glm library has the rotation view_matrix
+#include <glm/ext/matrix_clip_space.hpp> // This glm library has the perspective(frustum) view_matrix
+#include <glm/gtx/rotate_vector.hpp> // This glm library has the rotate(vector) function
+#include <math.h>
+
 #define SCREEN_W 768
 #define SCREEN_H 768
 #define SPEED 0.1f
@@ -49,7 +55,7 @@ public:
     Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_clip);
 
     void rotateCamera(float dx, float dy);
-    void translateCamera(float dx, float dy);
+    void translateCameraLeft();
     void doneRotating();
 };
 

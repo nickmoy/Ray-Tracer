@@ -1,9 +1,5 @@
 #include "camera.hpp"
-#include "glm/matrix.hpp"
-#include <glm/ext/matrix_transform.hpp> // This glm library has the rotation view_matrix
-#include <glm/ext/matrix_clip_space.hpp> // This glm library has the perspective(frustum) view_matrix
-#include <glm/gtx/rotate_vector.hpp> // This glm library has the rotate(vector) function
-#include <math.h>
+
 
 using namespace glm;
 
@@ -54,10 +50,9 @@ void Camera::doneRotating()
     right_reference = right;
 }
 
-void Camera::translateCamera(float dx, float dy)
+void Camera::translateCameraLeft()
 {
-    vec3 up = vec3(-direction.y, direction.x, direction.z);
-    vec3 right = vec3(direction.y, -direction.z, direction.y);
+    position += right * SPEED;
 
     mat4 temp_vm = mat4{1.0f};
     // For reference, glm::mat4's are an array of column vectors

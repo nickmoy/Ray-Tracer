@@ -16,6 +16,13 @@
 
 #include "renderer.hpp"
 
+#include "SDL2/SDL_events.h"
+#include "SDL2/SDL_keyboard.h"
+#include "SDL2/SDL_keycode.h"
+#include "glm/fwd.hpp"
+#include <SDL2/SDL.h>
+#include <iostream>
+
 
 class Window
 {

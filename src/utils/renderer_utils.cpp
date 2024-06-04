@@ -1,10 +1,5 @@
 #include "renderer_utils.hpp"
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <math.h>
+
 
 using namespace glm;
 

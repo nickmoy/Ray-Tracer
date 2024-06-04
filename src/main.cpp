@@ -12,9 +12,9 @@
 #include <OpenGL/gl3.h>
 #include <glm/glm.hpp>
 #include <iostream>
-#include "physics.hpp"
 #include "renderer.hpp"
 #include "window.hpp"
+#include "physics.hpp"
 
 
 #define FPS 60

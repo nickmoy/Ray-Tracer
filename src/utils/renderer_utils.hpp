@@ -4,6 +4,12 @@
 #include <OpenGL/gl3.h>
 #include <glm/glm.hpp>
 #include <string>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <math.h>
 
 #define GL_SILENCE_DEPRECATION
 

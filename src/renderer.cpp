@@ -6,9 +6,7 @@
 //
 
 #include "renderer.hpp"
-#include "utils/renderer_utils.hpp"
-#include "window.hpp"
-#include <iostream>
+
 
 using namespace glm;
 
