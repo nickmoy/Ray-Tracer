@@ -33,10 +33,7 @@ void Camera::rotateCamera(float dx, float dy)
     rotation_matrix = glm::rotate(rotation_reference_matrix, theta_x, up);
     rotation_matrix = glm::rotate(rotation_matrix, theta_y, right);
 
-    up = rotate(up_reference, -theta_x, up_reference);
-    up = rotate(up, -theta_y, right_reference);
-    right = rotate(right_reference, -theta_x, up_reference);
-    right = rotate(right, -theta_y, right_reference);
+    right = rotate(right_reference, -theta_x, up);
 
 }
 
@@ -47,7 +44,6 @@ void Camera::doneRotating()
     // up = reverse[1];
     // right = reverse[0];
     direction_reference = direction;
-    up_reference = up;
     right_reference = right;
 }
 

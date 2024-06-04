@@ -62,7 +62,7 @@ void Renderer::initBuffers()
 
     glGenBuffers(1, &UBO);
     glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4) + sizeof(float), NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4) + sizeof(vec3) + sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
     GLuint matrices_index = glGetUniformBlockIndex(shader_program, "matrices");
     // Bind matrices uniform block in shader to index 0
@@ -80,7 +80,8 @@ void Renderer::setUniforms()
     glBindBuffer(GL_UNIFORM_BUFFER, UBO);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), &camera.view_matrix[0][0]);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), &camera.rotation_matrix[0][0]);
-    glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(mat4), sizeof(float), &camera.fovy);
+    glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(mat4), sizeof(vec3), &camera.rotation_matrix[1]);
+    glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(mat4) + sizeof(vec3), sizeof(float), &camera.fovy);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

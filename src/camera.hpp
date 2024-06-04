@@ -28,19 +28,20 @@
 
 #define SCREEN_W 768
 #define SCREEN_H 768
-#define SPEED 0.5f
+#define SPEED 0.1f
 
 
 class Camera
 {
     glm::vec3 direction{0.0f, 0.0f, -1.0f}; // Unit vector centered at origin
-    glm::vec3 direction_reference{0.0f, 0.0f, -1.0f};
-    glm::vec3 up{0.0f, 1.0f, 0.0f};
     glm::vec3 right{1.0f, 0.0f, 0.0f};
-    glm::vec3 up_reference{0.0f, 1.0f, 0.0f};
+    glm::vec3 forward{0.0f, 0.0f, -1.0f};
+    glm::vec3 direction_reference{0.0f, 0.0f, -1.0f};
     glm::vec3 right_reference{1.0f, 0.0f, 0.0f};
+    glm::vec3 foward_reference{0.0f, 0.0f, -1.0f};
     
 public:
+    glm::vec3 up{0.0f, 1.0f, 0.0f};
     glm::vec3 position{0.0f, 0.0f, 3.0f};
     float fovy;
     float aspect_ratio;

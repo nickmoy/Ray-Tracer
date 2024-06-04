@@ -14,6 +14,7 @@ layout (std140) uniform matrices
 {
     mat4 view;
     mat4 rotation;
+    vec3 sky;
     float fovy;
 };
 
@@ -48,7 +49,7 @@ void main()
         float t_hit = (-b - sqrt(det)) / (2*a);
         vec3 hit_point = ray * t_hit;
         vec3 normal = normalize(hit_point - sphere_center);
-        vec3 sky = (rotation * vec4(0.0f, 1.0f, 0.0f, 1.0f)).xyz;
+        // vec3 sky = vec3(0.0f, 1.0f, 0.0f);
         float brightness = max(dot(normal, sky), 0);
 
         if(t_hit > 0)
