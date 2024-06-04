@@ -34,7 +34,7 @@ void Camera::rotateCamera(float dx, float dy)
     rotation_matrix = glm::rotate(rotation_matrix, theta_y, right);
 
     right = rotate(right_reference, -theta_x, up);
-
+    foward = rotate(foward_reference, -theta_x, up);
 }
 
 void Camera::doneRotating()
@@ -45,6 +45,7 @@ void Camera::doneRotating()
     // right = reverse[0];
     direction_reference = direction;
     right_reference = right;
+    foward_reference = foward;
 }
 
 void Camera::translateCameraLeft()
@@ -85,7 +86,7 @@ void Camera::translateCameraDown()
 
 void Camera::translateCameraFoward()
 {
-    position += direction * SPEED;
+    position += foward * SPEED;
 
     mat4 temp_vm = mat4{1.0f};
     // For reference, glm::mat4's are an array of column vectors
@@ -94,7 +95,7 @@ void Camera::translateCameraFoward()
 
 void Camera::translateCameraBack()
 {
-    position += -direction * SPEED;
+    position += -foward * SPEED;
 
     mat4 temp_vm = mat4{1.0f};
     // For reference, glm::mat4's are an array of column vectors
