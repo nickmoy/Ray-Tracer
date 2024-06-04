@@ -28,8 +28,8 @@ Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_cl
 
 void Camera::rotateCamera(float dx, float dy)
 {
-    float theta_x = -(dx/768.0f) * 2.0f * M_PI/(180.0f/fovy * 2.0f);
-    float theta_y = (dy/768.0f) * 2.0f * M_PI/(180.0f/fovy * 2.0f);
+    float theta_x = -(dx/768.0f) * M_PI/(180.0f/fovy);
+    float theta_y = (dy/768.0f) * M_PI/(180.0f/fovy);
 
     direction = rotate(direction, theta_x, up);
     direction = rotate(direction, theta_y, right);
