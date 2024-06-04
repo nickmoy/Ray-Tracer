@@ -13,15 +13,13 @@
 #include <SDL2/SDL.h>
 #include <OpenGL/gl3.h>
 #include <glm/glm.hpp>
-
-#include "renderer.hpp"
-
 #include "SDL2/SDL_events.h"
 #include "SDL2/SDL_keyboard.h"
 #include "SDL2/SDL_keycode.h"
 #include "glm/fwd.hpp"
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "renderer.hpp"
 
 
 class Window
@@ -29,6 +27,7 @@ class Window
 
 private:
     glm::vec2 clicked_at;
+    int keys_held[2];
     
 public:
     SDL_Window *window;

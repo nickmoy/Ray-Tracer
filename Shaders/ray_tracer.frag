@@ -5,7 +5,7 @@
 
 layout(location = 0) out vec4 FragColor;
 
-uniform float RADIUS = 1.0f;
+uniform float RADIUS = 0.5f;
 uniform vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
 
 // Light Brown #9e5341
@@ -48,7 +48,7 @@ void main()
         float t_hit = (-b - sqrt(det)) / (2*a);
         vec3 hit_point = ray * t_hit;
         vec3 normal = normalize(hit_point - sphere_center);
-        vec3 sky = vec3(0.0f, 1.0f, 0.0f);
+        vec3 sky = (rotation * vec4(0.0f, 1.0f, 0.0f, 1.0f)).xyz;
         float brightness = max(dot(normal, sky), 0);
 
         if(t_hit > 0)

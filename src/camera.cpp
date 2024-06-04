@@ -27,8 +27,8 @@ void Camera::rotateCamera(float dx, float dy)
     float theta_x = -(dx/768.0f) * M_PI/(180.0f/fovy);
     float theta_y = (dy/768.0f) * M_PI/(180.0f/fovy);
 
-    direction = rotate(direction, theta_x, up);
-    direction = rotate(direction, theta_y, right);
+    direction = rotate(direction_reference, -theta_x, up);
+    direction = rotate(direction, -theta_y, right);
 
     rotation_matrix = glm::rotate(rotation_reference_matrix, theta_x, up);
     rotation_matrix = glm::rotate(rotation_matrix, theta_y, right);
@@ -46,13 +46,59 @@ void Camera::doneRotating()
     // mat4 reverse = inverse(rotation_matrix);
     // up = reverse[1];
     // right = reverse[0];
+    direction_reference = direction;
     up_reference = up;
     right_reference = right;
 }
 
 void Camera::translateCameraLeft()
 {
+    position += -right * SPEED;
+
+    mat4 temp_vm = mat4{1.0f};
+    // For reference, glm::mat4's are an array of column vectors
+    view_matrix = glm::translate(temp_vm, -position);
+}
+
+void Camera::translateCameraRight()
+{
     position += right * SPEED;
+
+    mat4 temp_vm = mat4{1.0f};
+    // For reference, glm::mat4's are an array of column vectors
+    view_matrix = glm::translate(temp_vm, -position);
+}
+
+void Camera::translateCameraUp()
+{
+    position += up * SPEED;
+
+    mat4 temp_vm = mat4{1.0f};
+    // For reference, glm::mat4's are an array of column vectors
+    view_matrix = glm::translate(temp_vm, -position);
+}
+
+void Camera::translateCameraDown()
+{
+    position += -up * SPEED;
+
+    mat4 temp_vm = mat4{1.0f};
+    // For reference, glm::mat4's are an array of column vectors
+    view_matrix = glm::translate(temp_vm, -position);
+}
+
+void Camera::translateCameraFoward()
+{
+    position += direction * SPEED;
+
+    mat4 temp_vm = mat4{1.0f};
+    // For reference, glm::mat4's are an array of column vectors
+    view_matrix = glm::translate(temp_vm, -position);
+}
+
+void Camera::translateCameraBack()
+{
+    position += -direction * SPEED;
 
     mat4 temp_vm = mat4{1.0f};
     // For reference, glm::mat4's are an array of column vectors

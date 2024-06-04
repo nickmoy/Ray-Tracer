@@ -6,6 +6,7 @@
 //
 
 #include "window.hpp"
+#include "SDL2/SDL_keycode.h"
 
 
 using namespace glm;
@@ -41,6 +42,8 @@ Window::Window()
     SDL_GL_SetSwapInterval(1);
 
     clicked_at = vec2(768.0f/2, 768.0f/2);
+    keys_held[0] = -1;
+    keys_held[1] = -1;
 }
 
 void changeColor(float R, float G, float B, float A)
@@ -57,11 +60,30 @@ void changeColor(float R, float G, float B, float A)
  */
 void Window::pollIO(SDL_Event e, bool *running)
 {
-    // const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-    // if(keystate[SDLK_LEFT])
-    // {
-    //     renderer->camera.translateCameraLeft();
-    // }
+    if(keys_held[0] == SDLK_LEFT)
+    {
+        renderer->camera.translateCameraLeft();
+    }
+    else if(keys_held[0] == SDLK_RIGHT)
+    {
+        renderer->camera.translateCameraRight();
+    }
+    else if(keys_held[0] == SDLK_UP)
+    {
+        renderer->camera.translateCameraFoward();
+    }
+    else if(keys_held[0] == SDLK_DOWN)
+    {
+        renderer->camera.translateCameraBack();
+    }
+    else if(keys_held[0] == SDLK_w)
+    {
+        renderer->camera.translateCameraUp();
+    }
+    else if(keys_held[0] == SDLK_s)
+    {
+        renderer->camera.translateCameraDown();
+    }
 
     float moved_to_x = 0;
     float moved_to_y = 0;
@@ -84,6 +106,11 @@ void Window::pollIO(SDL_Event e, bool *running)
                     *running = false;
                     break;
             }
+
+            keys_held[0] = e.key.keysym.sym;
+        }
+        else if (e.type == SDL_KEYUP) {
+            keys_held[0] = -1;
         }
         // Only detects the position when the Mouse is Moved
         else if(e.type == SDL_MOUSEMOTION && e.motion.state & SDL_BUTTON_LMASK)
