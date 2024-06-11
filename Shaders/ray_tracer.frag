@@ -4,6 +4,10 @@
 #define M_PI 3.141592653589
 #define NUM_OBJS 2
 
+const int LAMBERTIAN = 0;
+const int LIGHT = 1;
+const int DIELECTRIC = 2;
+
 layout(location = 0) out vec4 FragColor;
 
 layout (std140) uniform matrices
@@ -47,22 +51,18 @@ bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point
 
 void main()
 {
+    // Ray from camera through pixel
     Ray ray;
     ray.origin = vec3(0.0f);
     ray.dir.xyz = (gl_FragCoord.xyz/768.0f) * 2.0f - 1.0f;
-    // Divide by value of 90/fovy
     ray.dir.xy *= tan((M_PI/180) * (fovy/2));
     ray.dir.z = -1.0f;
-
-    // Sphere sphere;
-    // vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
-    // sphere.center = (rotation * view * center).xyz;
-    // sphere.radius = 0.5f;
 
     vec3 color = radiance(ray);
 
     FragColor = vec4(color, 1.0f);
 }
+
 
 float smoothClamp(float x, float a, float b)
 {

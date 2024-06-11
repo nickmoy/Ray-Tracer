@@ -15,7 +15,7 @@
 
 // Creating shaders
 std::string loadShaderSource(const std::string& filename);
-int compileShaderError(GLuint shader);
+int compileShaderError(GLuint shader, const std::string& shader_type);
 int linkShadersError(GLuint shader_program);
 int initShaders(GLuint &vert_shader, std::string vert_path, GLuint &frag_shader, std::string frag_path, GLuint &shader_program);
 

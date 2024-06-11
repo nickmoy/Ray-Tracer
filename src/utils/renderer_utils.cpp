@@ -26,7 +26,7 @@ std::string loadShaderSource(const std::string& filename)
 /*
  * Check for shader compilation error.
  */
-int compileShaderError(GLuint shader)
+int compileShaderError(GLuint shader, const std::string& shader_type)
 {
     int  success;
     char infoLog[512];
@@ -34,7 +34,16 @@ int compileShaderError(GLuint shader)
     if(!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::string type = "";
+        if(shader_type == "vert")
+        {
+            type = "VERTEX";
+        }
+        else
+        {
+            type = "FRAGMENT";
+        }
+        std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED\n" << infoLog << std::endl;
         return -1;
     }
     return 0;
@@ -73,7 +82,7 @@ int initShaders(GLuint &vert_shader, std::string vert_path, GLuint &frag_shader,
     glCompileShader(vert_shader);
     
     // Check for compilation errors
-    if(compileShaderError(vert_shader) == -1) { return -1; }
+    if(compileShaderError(vert_shader, "vert") == -1) { return -1; }
     
     // Create Fragment shader
     source = loadShaderSource(frag_path);
@@ -85,7 +94,7 @@ int initShaders(GLuint &vert_shader, std::string vert_path, GLuint &frag_shader,
     glCompileShader(frag_shader);
     
     // Check for compilation errors
-    if(compileShaderError(frag_shader) == -1) { return -1; }
+    if(compileShaderError(frag_shader, "frag") == -1) { return -1; }
     
     // Shader program
     shader_program = glCreateProgram();
