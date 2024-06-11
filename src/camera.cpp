@@ -33,25 +33,15 @@ void Camera::rotateCamera(float dx, float dy)
 
     // Rotate horizontally
     direction = rotate(direction_reference, -theta_x, up);
-    direction = rotate(direction, -theta_y, right);
     rotation_matrix = rotate(rotation_reference_matrix, theta_x, up);
-    rotation_matrix = rotate(rotation_matrix, theta_y, right);
-
-    // vec3 floor = vec3(0.0f, -1.0f, 0.0f);
-    // if(glm::abs(theta_y_reference) > (M_PI / 2) - 0.15f)
-    // {
-    //     direction = rotate(direction, theta_y, right);
-    //     rotation_matrix = glm::rotate(rotation_matrix, -theta_y, right);
-    // }
 
     vec3 try_direction = rotate(direction, -theta_y, right);
     vec3 floor = vec3(0.0f, -1.0f, 0.0f);
     if(dot(try_direction, floor) <= 0.95f)
     {
-        direction = try_direction;
+        direction = rotate(direction, -theta_y, right);
         rotation_matrix = rotate(rotation_matrix, theta_y, right);
     }
-            
 
     right = rotate(right_reference, -theta_x, up);
     foward = rotate(foward_reference, -theta_x, up);
