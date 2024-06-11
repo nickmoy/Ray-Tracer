@@ -38,8 +38,8 @@ struct Sphere
 
 const Sphere m_objects[NUM_OBJS] = Sphere[]
 (
-    Sphere(vec3(0.5f, -0.5f, -2.0f), 0.5f),
-    Sphere(vec3(-0.5f, 0.5f, -2.0f), 0.5f)
+    Sphere(vec3(0.7f, 0.5f, -2.0f), 0.5f),
+    Sphere(vec3(-0.7f, 0.3f, -2.0f), 0.3f)
 );
 
 float smoothClamp(float x, float a, float b);
@@ -107,9 +107,20 @@ vec3 radiance(Ray ray)
             closest_hit = t_hit;
             float brightness = max(dot(normal, sky), 0);
 
+            // if(t_hit > 0)
+            // {
+            //     color = vec3(normal * 0.5f + 0.5f) * brightness;
+            // }
             if(t_hit > 0)
             {
-                color = vec3(normal * 0.5f + 0.5f) * brightness;
+                if(brightness > 1.0f - 0.05f)
+                {
+                    color = vec3(1.0f, 1.0f, 1.0f);
+                }
+                else
+                {
+                    color = vec3(0.0f, 0.0f, 0.0f);
+                }
             }
             else
             {
@@ -120,26 +131,18 @@ vec3 radiance(Ray ray)
     
     if(closest_hit >= 1000.0f)
     {
-        if(ray.dir.z < 0)
+        if(dot(ray.dir.xyz, sky) < 0)
         {
-            color = vec3(210.0f/255, 222.0f/255, 228.0f/255);
+            // color = vec3(210.0f/255, 222.0f/255, 228.0f/255);
+            color = vec3(80.0f/255, 110.0f/255, 173.0f/255);
         }
         else
         {
-            color = vec3(80.0f/255, 110.0f/255, 173.0f/255);
+            color = vec3(141.0f/255, 155.0f/255, 178.0f/255);
         }
     }
 
     return color;
-}
-
-/*
- *  Should take in unit vector
- */
-vec3 skyColor(Ray ray)
-{
-    float t = 0.5 * (ray.dir.y + 1.0f);
-    return (1.0 - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
 }
 
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal)
@@ -160,4 +163,13 @@ bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point
     normal = normalize(hit_point - sphere.center);
 
     return true;
+}
+
+/*
+ *  Should take in unit vector
+ */
+vec3 skyColor(Ray ray)
+{
+    float t = 0.5 * (ray.dir.y + 1.0f);
+    return (1.0 - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
 }

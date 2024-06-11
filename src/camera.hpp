@@ -29,6 +29,7 @@
 #define SCREEN_W 768
 #define SCREEN_H 768
 #define SPEED 0.1f
+#define EPS 0.12f
 
 
 class Camera
@@ -39,6 +40,8 @@ class Camera
     glm::vec3 direction_reference{0.0f, 0.0f, -1.0f};
     glm::vec3 right_reference{1.0f, 0.0f, 0.0f};
     glm::vec3 foward_reference{0.0f, 0.0f, -1.0f};
+
+    float theta_y_reference;
     
 public:
     glm::vec3 up{0.0f, 1.0f, 0.0f};
