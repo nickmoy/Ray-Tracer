@@ -60,19 +60,19 @@ void changeColor(float R, float G, float B, float A)
  */
 void Window::pollIO(SDL_Event e, bool *running)
 {
-    if(keys_held[0] == SDLK_LEFT)
+    if(keys_held[0] == SDLK_k)
     {
         renderer->camera.translateCameraLeft();
     }
-    else if(keys_held[0] == SDLK_RIGHT)
+    else if(keys_held[0] == SDLK_SEMICOLON)
     {
         renderer->camera.translateCameraRight();
     }
-    else if(keys_held[0] == SDLK_UP)
+    else if(keys_held[0] == SDLK_o)
     {
         renderer->camera.translateCameraFoward();
     }
-    else if(keys_held[0] == SDLK_DOWN)
+    else if(keys_held[0] == SDLK_l)
     {
         renderer->camera.translateCameraBack();
     }

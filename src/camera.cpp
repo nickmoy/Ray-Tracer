@@ -28,23 +28,42 @@ Camera::Camera(float _fovy, float _aspect_ratio, float _near_clip, float _far_cl
 
 void Camera::rotateCamera(float dx, float dy)
 {
-    float theta_x = -(dx/768.0f) * M_PI/(180.0f/fovy);
-    float theta_y = (dy/768.0f) * M_PI/(180.0f/fovy);
+    float dtheta_x = -(dx/768.0f) * M_PI/(180.0f/fovy);
+    float dtheta_y = (dy/768.0f) * M_PI/(180.0f/fovy);
+
+    float angle = M_PI/2.0f;
+    
+    theta_y = theta_y_reference + dtheta_y;
 
     // Rotate horizontally
-    direction = rotate(direction_reference, -theta_x, up);
-    rotation_matrix = rotate(rotation_reference_matrix, theta_x, up);
+    direction = rotate(direction_reference, -dtheta_x, up);
+    rotation_matrix = rotate(rotation_reference_matrix, dtheta_x, up);
 
-    vec3 try_direction = rotate(direction, -theta_y, right);
-    vec3 floor = vec3(0.0f, -1.0f, 0.0f);
-    if(dot(try_direction, floor) <= 0.95f)
+    vec3 try_direction = rotate(direction, -dtheta_y, right);
+    vec3 floor = vec3(0.0f, 1.0f, 0.0f);
+    if(abs(theta_y) <= angle - 0.3175604293f)
     {
-        direction = rotate(direction, -theta_y, right);
-        rotation_matrix = rotate(rotation_matrix, theta_y, right);
+        direction = rotate(direction, -dtheta_y, right);
+        rotation_matrix = rotate(rotation_matrix, dtheta_y, right);
+    }
+    else
+    {
+        if(theta_y > 0)
+        {
+            theta_y = angle - 0.3175604293f;
+            direction = rotate(direction, -(angle - 0.3175604293f - theta_y_reference), right);
+            rotation_matrix = rotate(rotation_matrix, angle - 0.3175604293f - theta_y_reference, right);
+        }
+        else
+        {
+            theta_y = -(angle - 0.3175604293f);
+            direction = rotate(direction, angle - 0.3175604293f + theta_y_reference, right);
+            rotation_matrix = rotate(rotation_matrix, -(angle - 0.3175604293f + theta_y_reference), right);
+        }
     }
 
-    right = rotate(right_reference, -theta_x, up);
-    foward = rotate(foward_reference, -theta_x, up);
+    right = rotate(right_reference, -dtheta_x, up);
+    foward = rotate(foward_reference, -dtheta_x, up);
 }
 
 void Camera::doneRotating()
@@ -56,6 +75,7 @@ void Camera::doneRotating()
     direction_reference = direction;
     right_reference = right;
     foward_reference = foward;
+    theta_y_reference = theta_y;
 }
 
 void Camera::translateCameraLeft()

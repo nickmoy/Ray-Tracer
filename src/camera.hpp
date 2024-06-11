@@ -41,6 +41,7 @@ class Camera
     glm::vec3 right_reference{1.0f, 0.0f, 0.0f};
     glm::vec3 foward_reference{0.0f, 0.0f, -1.0f};
 
+    float theta_y;
     float theta_y_reference;
     
 public:
