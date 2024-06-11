@@ -49,8 +49,9 @@ venv
 Include/SDL2/
 Include/glm/
 
-# TODO file
+# TODO  and text files
 TODO.md
+snippets.txt
 
 # Fortran module files
 *.mod
