@@ -2,6 +2,7 @@
 
 #define BRIGHTNESS_COEFF 0.7
 #define M_PI 3.141592653589
+#define NUM_OBJS 2
 
 layout(location = 0) out vec4 FragColor;
 
@@ -11,6 +12,12 @@ layout (std140) uniform matrices
     mat4 rotation;
     vec3 sky;
     float fovy;
+};
+
+struct Material
+{
+    int type;
+    vec3 albedo;
 };
 
 struct Ray
@@ -25,10 +32,10 @@ struct Sphere
     float radius;
 };
 
-const Sphere m_objects[2] = Sphere[]
+const Sphere m_objects[NUM_OBJS] = Sphere[]
 (
-    Sphere(vec3(0.7f, 0.0f, -2.0f), 0.5f),
-    Sphere(vec3(-0.7f, 0.0f, -2.0f), 0.5f)
+    Sphere(vec3(0.5f, -0.5f, -2.0f), 0.5f),
+    Sphere(vec3(-0.5f, 0.5f, -2.0f), 0.5f)
 );
 
 float smoothClamp(float x, float a, float b);
@@ -47,46 +54,14 @@ void main()
     ray.dir.xy *= tan((M_PI/180) * (fovy/2));
     ray.dir.z = -1.0f;
 
-    Sphere sphere;
-    vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
-    sphere.center = (rotation * view * center).xyz;
-    sphere.radius = 0.5f;
+    // Sphere sphere;
+    // vec4 center = vec4(0.0f, 0.0f, -2.0f, 1.0f);
+    // sphere.center = (rotation * view * center).xyz;
+    // sphere.radius = 0.5f;
 
-    float t_hit;
-    vec3 hit_point;
-    vec3 normal;
+    vec3 color = radiance(ray);
 
-    bool did_hit = intersectSphere(ray, sphere, t_hit, hit_point, normal);
-
-    if(!did_hit)
-    {
-        // vec4 Light_Gray = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0)
-        if(ray.dir.z < 0)
-        {
-            FragColor = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0f);
-        }
-        else
-        {
-            FragColor = vec4(80.0f/255, 110.0f/255, 173.0f/255, 1.0f);
-        }
-    }
-    else
-    {
-        // float t_hit = (-b - sqrt(det)) / (2*a);
-        // vec3 hit_point = ray.origin + ray.dir * t_hit;
-        // vec3 normal = normalize(hit_point - sphere.center);
-        float brightness = max(dot(normal, sky), 0);
-
-        if(t_hit > 0)
-        {
-            FragColor = vec4(normal * 0.5f + 0.5f, 1.0f) * brightness;
-        }
-        else
-        {
-            FragColor = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0);
-        }
-    }
-
+    FragColor = vec4(color, 1.0f);
 }
 
 float smoothClamp(float x, float a, float b)
@@ -105,13 +80,57 @@ vec3 reflect(vec3 ray, vec3 normal)
     return ray + 2*dot(normal, ray) * normal;
 }
 
+/*
+ *  Shoot ray in scene and calculate closest intersection by looping through spheres
+ */
 vec3 radiance(Ray ray)
 {
     // If ray intersects with circle
     // Calculate attenuation based on Lambertian BRDF
     // or use skyColor(ray);
     
-    return vec3(1.0f, 1.0f, 1.0f);
+    float closest_hit = 2000.0f;
+    vec3 color = vec3(1.0f, 1.0f, 1.0f);
+    for(int i = 0; i < NUM_OBJS; i++)
+    {
+        Sphere sphere = m_objects[i];
+        sphere.center = (rotation * view * vec4(sphere.center, 1.0f)).xyz;
+
+        float t_hit;
+        vec3 hit_point;
+        vec3 normal;
+
+        bool did_hit = intersectSphere(ray, sphere, t_hit, hit_point, normal);
+
+        if(did_hit && t_hit < closest_hit)
+        {
+            closest_hit = t_hit;
+            float brightness = max(dot(normal, sky), 0);
+
+            if(t_hit > 0)
+            {
+                color = vec3(normal * 0.5f + 0.5f) * brightness;
+            }
+            else
+            {
+                color = vec3(210.0f/255, 222.0f/255, 228.0f/255);
+            }
+        }
+    }
+    
+    if(closest_hit >= 1000.0f)
+    {
+        if(ray.dir.z < 0)
+        {
+            color = vec3(210.0f/255, 222.0f/255, 228.0f/255);
+        }
+        else
+        {
+            color = vec3(80.0f/255, 110.0f/255, 173.0f/255);
+        }
+    }
+
+    return color;
 }
 
 /*
