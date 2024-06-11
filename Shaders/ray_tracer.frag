@@ -52,13 +52,13 @@ void main()
     sphere.center = (rotation * view * center).xyz;
     sphere.radius = 0.5f;
 
-    float a = dot(ray.dir, ray.dir);
-    float b = - 2.0f * dot(sphere.center, ray.dir);
-    float c = dot(sphere.center, sphere.center) - sphere.radius*sphere.radius;
+    float t_hit;
+    vec3 hit_point;
+    vec3 normal;
 
-    float det = b*b - 4.0f*a*c;
+    bool did_hit = intersectSphere(ray, sphere, t_hit, hit_point, normal);
 
-    if(det < 0)
+    if(!did_hit)
     {
         // vec4 Light_Gray = vec4(210.0f/255, 222.0f/255, 228.0f/255, 1.0)
         if(ray.dir.z < 0)
@@ -72,9 +72,9 @@ void main()
     }
     else
     {
-        float t_hit = (-b - sqrt(det)) / (2*a);
-        vec3 hit_point = ray.origin + ray.dir * t_hit;
-        vec3 normal = normalize(hit_point - sphere.center);
+        // float t_hit = (-b - sqrt(det)) / (2*a);
+        // vec3 hit_point = ray.origin + ray.dir * t_hit;
+        // vec3 normal = normalize(hit_point - sphere.center);
         float brightness = max(dot(normal, sky), 0);
 
         if(t_hit > 0)
