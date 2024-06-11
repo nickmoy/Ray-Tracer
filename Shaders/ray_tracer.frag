@@ -25,11 +25,18 @@ struct Sphere
     float radius;
 };
 
+const Sphere m_objects[2] = Sphere[]
+(
+    Sphere(vec3(0.7f, 0.0f, -2.0f), 0.5f),
+    Sphere(vec3(-0.7f, 0.0f, -2.0f), 0.5f)
+);
+
 float smoothClamp(float x, float a, float b);
 float rand(vec2 co);
 vec3 reflect(vec3 ray, vec3 normal);
 vec3 radiance(Ray ray);
-bool intersectSphere(Ray ray, Sphere sphere, out vec3 t_hit, out vec3 normal);
+bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal);
+
 
 void main()
 {
@@ -103,6 +110,7 @@ vec3 radiance(Ray ray)
     // If ray intersects with circle
     // Calculate attenuation based on Lambertian BRDF
     // or use skyColor(ray);
+    
     return vec3(1.0f, 1.0f, 1.0f);
 }
 
@@ -113,4 +121,24 @@ vec3 skyColor(Ray ray)
 {
     float t = 0.5 * (ray.dir.y + 1.0f);
     return (1.0 - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
+}
+
+bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal)
+{
+    float a = dot(ray.dir, ray.dir);
+    float b = - 2.0f * dot(sphere.center, ray.dir);
+    float c = dot(sphere.center, sphere.center) - sphere.radius*sphere.radius;
+
+    float det = b*b - 4.0f*a*c;
+    
+    if(det < 0)
+    {
+        return false;
+    }
+
+    t_hit = (-b - sqrt(det)) / (2*a);
+    hit_point = ray.origin + ray.dir * t_hit;
+    normal = normalize(hit_point - sphere.center);
+
+    return true;
 }
