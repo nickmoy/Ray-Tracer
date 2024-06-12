@@ -40,14 +40,14 @@ struct Sphere
 
 const Sphere m_objects[NUM_OBJS] = Sphere[]
 (
-    Sphere(vec3(-0.7f, 0.3f, -2.0f), 0.3f, Material(0, vec3(186.0f/255, 121.0f/255, 86.0f/255))),
-    Sphere(vec3(0.7f, 0.5f, -2.0f), 0.5f, Material(1, vec3(48.0f/255, 138.0f/255, 184.0f/255)))
+    Sphere(vec3(0.7f, 0.5f, -2.0f), 0.5f, Material(1, vec3(48.0f/255, 138.0f/255, 184.0f/255))),
+    Sphere(vec3(-0.7f, 0.3f, -2.0f), 0.3f, Material(0, vec3(186.0f/255, 121.0f/255, 86.0f/255)))
 );
 
 float smoothClamp(float x, float a, float b);
 float rand(vec2 co);
-vec3 reflect(vec3 ray, vec3 normal);
-vec3 radiance(Ray ray, out Ray ray_next);
+vec3 reflect(Ray ray, vec3 normal);
+void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation);
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal);
 vec3 skyColor(Ray ray);
 
@@ -61,11 +61,13 @@ void main()
     ray.dir.xy *= tan((M_PI/180) * (fovy/2));
     ray.dir.z = -1.0f;
 
-    vec3 color = vec3(1.0f);
     Ray ray_next;
+    vec3 color = vec3(1.0f);
+    vec3 attenuation = vec3(1.0f);
     for(int i = 0; i < NUM_BOUNCES; i++)
     {
-        color *= radiance(ray, ray_next);
+        radiance(ray, ray_next, attenuation);
+        color *= attenuation;
         ray = ray_next;
     }
 
@@ -84,22 +86,22 @@ float rand(vec2 co)
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
-vec3 reflect(vec3 ray, vec3 normal)
+vec3 reflect(Ray ray, vec3 normal)
 {
-    return ray + 2*dot(normal, ray) * normal;
+    vec3 direction = ray.dir;
+    return direction - 2*dot(normal, direction) * normal;
 }
 
 /*
  *  Shoot ray in scene and calculate closest intersection by looping through spheres
  */
-vec3 radiance(Ray ray, out Ray ray_next)
+void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation)
 {
     // If ray intersects with circle
     // Calculate attenuation based on Lambertian BRDF
     // or use skyColor(ray);
     
     float closest_hit = 2000.0f;
-    vec3 color = vec3(1.0f, 1.0f, 1.0f);
     for(int i = 0; i < NUM_OBJS; i++)
     {
         Sphere sphere = m_objects[i];
@@ -115,15 +117,16 @@ vec3 radiance(Ray ray, out Ray ray_next)
         {
             closest_hit = t_hit;
             ray_next.origin = hit_point;
-            ray_next.dir = normal;
-            float brightness = max(dot(normal, sky), 0);
+            ray_next.dir = reflect(ray, normal);
             if(sphere.material.type == 0)
             {
-                    color = sphere.material.albedo * (normal * 0.5f + 0.5f) * brightness;
+                float brightness = max(dot(normal, sky), 0);
+                // attenuation = sphere.material.albedo * (normal * 0.5f + 0.5f) * brightness;
+                attenuation = sphere.material.albedo * brightness;
             }
             else if(sphere.material.type == 1)
             {
-                    color = vec3(1.0f);
+                attenuation = vec3(1.0f);
             }
         }
     }
@@ -132,21 +135,17 @@ vec3 radiance(Ray ray, out Ray ray_next)
     {
         if(dot(ray.dir.xyz, sky) < 0)
         {
-            // color = vec3(210.0f/255, 222.0f/255, 228.0f/255);
-            color = vec3(80.0f/255, 110.0f/255, 173.0f/255);
+            attenuation = vec3(80.0f/255, 110.0f/255, 173.0f/255);
             ray_next.origin = vec3(0.0f);
             ray_next.dir = vec3(0.0f, -1.0f, 0.0f);
         }
         else
         {
-            // color = vec3(141.0f/255, 155.0f/255, 178.0f/255);
-            color = skyColor(ray);
+            attenuation = skyColor(ray);
             ray_next.origin = vec3(0.0f);
             ray_next.dir = vec3(0.0f, 1.0f, 0.0f);
         }
     }
-
-    return color;
 }
 
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal)
