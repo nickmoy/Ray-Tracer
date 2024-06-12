@@ -47,7 +47,7 @@ const Sphere m_objects[NUM_OBJS] = Sphere[]
 float smoothClamp(float x, float a, float b);
 float rand(vec2 co);
 vec3 reflect(Ray ray, vec3 normal);
-void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation);
+void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, out bool sky_hit);
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal);
 vec3 skyColor(Ray ray);
 
@@ -64,9 +64,14 @@ void main()
     Ray ray_next;
     vec3 color = vec3(1.0f);
     vec3 attenuation = vec3(1.0f);
+    bool sky_hit = false;
     for(int i = 0; i < NUM_BOUNCES; i++)
     {
-        radiance(ray, ray_next, attenuation);
+        if(sky_hit)
+        {
+            i = NUM_BOUNCES-1;
+        }
+        radiance(ray, ray_next, attenuation, sky_hit);
         color *= attenuation;
         ray = ray_next;
     }
@@ -95,7 +100,7 @@ vec3 reflect(Ray ray, vec3 normal)
 /*
  *  Shoot ray in scene and calculate closest intersection by looping through spheres
  */
-void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation)
+void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, out bool sky_hit)
 {
     // If ray intersects with circle
     // Calculate attenuation based on Lambertian BRDF
@@ -133,6 +138,7 @@ void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation)
     
     if(closest_hit >= 1000.0f)
     {
+        sky_hit = true;
         if(dot(ray.dir.xyz, sky) < 0)
         {
             attenuation = vec3(80.0f/255, 110.0f/255, 173.0f/255);
