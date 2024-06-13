@@ -69,11 +69,11 @@ int main(int argc, char *argv[])
                 /* Game physics */
                 // physics.update(GAME_DELTA_TIME);
                 
+                /* Render */
+                renderer.render();
                 b += FRAME_DELTA_TIME_MIL_SEC;
             }
             
-            // Render
-            renderer.render();
             
             // Update screen
             SDL_GL_SwapWindow(window);
