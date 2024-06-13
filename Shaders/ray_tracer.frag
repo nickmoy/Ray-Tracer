@@ -2,7 +2,7 @@
 
 #define M_PI 3.141592653589
 #define NUM_OBJS 3
-#define NUM_BOUNCES 10
+#define NUM_BOUNCES 20
 #define NUM_SAMPLES 10
 #define T_MIN 0.001f
 #define T_MAX 1000.0f
@@ -60,10 +60,11 @@ vec3 reflect(Ray ray, vec3 normal);
 void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, inout bool stop);
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal);
 vec3 skyColor(Ray ray);
-vec3 randUnitVector(inout int seed);
+vec3 randUnitVector(vec3 normal);
 vec3 randVectorInHemisphere(vec3 normal);
 vec3 shootRay(Ray ray);
 int hash(int x);
+vec3 hashOld33(vec3 p);
 
 
 void main()
@@ -130,7 +131,7 @@ void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, inout bool stop
             closest_hit = t_hit;
             ray_next.origin = hit_point;
             // ray_next.dir = reflect(ray, normal);
-            ray_next.dir = normal + randUnitVector(seed);
+            ray_next.dir = normal + randUnitVector(normal);
             // ray_next.dir = randVectorInHemisphere(normal);
             if(sphere.material.type == 0)
             {
@@ -210,17 +211,18 @@ float rand(inout int seed)
     return fract((0.5 * sin(seed) + 0.5) * 43758.5453);
 }
 
-vec3 randUnitVector(inout int seed)
+vec3 randUnitVector(vec3 normal)
 {
     // return normalize(vec3(hash(seed), hash(seed+1), hash(seed+2)));
-    return normalize(vec3(rand(seed), rand(seed), rand(seed)));
+    // return normalize(vec3(rand(seed), rand(seed), rand(seed)));
+    return normalize(hashOld33(normal));
 }
 
 vec3 randVectorInHemisphere(vec3 normal)
 {
     while(true)
     {
-        vec3 rand_vec = randUnitVector(seed);
+        vec3 rand_vec = randUnitVector(normal);
         if(dot(rand_vec, normal) > 0)
         {
             return rand_vec;
@@ -236,4 +238,13 @@ int hash(int x)
     x ^= ( x >> 11 );
     x += ( x << 15 );
     return x;
+}
+
+vec3 hashOld33(vec3 p)
+{
+	p = vec3( dot(p,vec3(127.1f,311.7f, 74.7f)),
+			  dot(p,vec3(269.5f,183.3f,246.1f)),
+			  dot(p,vec3(113.5f,271.9f,124.6f)));
+
+	return fract(sin(p)*43758.5453123f);
 }
