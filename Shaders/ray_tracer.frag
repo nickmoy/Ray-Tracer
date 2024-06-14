@@ -56,7 +56,7 @@ const Sphere m_objects[NUM_OBJS] = Sphere[]
     Sphere(vec3(-0.3f, 0.3f, -2.0f), 0.3f, Material(LAMBERTIAN, vec3(1.0f, 0.0f, 0.0f))),
     Sphere(vec3(0.3f, 0.3f, -2.0f), 0.3f, Material(LAMBERTIAN, vec3(0.0f, 0.0f, 1.0f))),
     Sphere(vec3(0.0f, 0.5f, -3.2f), 0.5f, Material(MIRROR, vec3(0.85f))),
-    Sphere(vec3(0.0f, -1000.0f, -2.0f), 1000.0f, Material(FLOOR, vec3(80.0f/420, 110.0f/420, 173.0f/420)))
+    Sphere(vec3(0.0f, -1000.0f, -2.0f), 1000.0f, Material(FLOOR, vec3(0.5f)))
 );
 
 
@@ -144,7 +144,7 @@ void radiance(Ray ray, out Ray ray_next, out vec3 attenuation, inout bool stop, 
             }
             else if(sphere.material.type == MIRROR)
             {
-                ray_next.dir = normal;
+                ray_next.dir = reflect(ray, normal);
                 attenuation = sphere.material.albedo;
             }
             else if(sphere.material.type == FLOOR)
