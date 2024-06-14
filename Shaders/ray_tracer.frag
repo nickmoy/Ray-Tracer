@@ -1,16 +1,15 @@
 #version 330 core
 
 #define M_PI 3.141592653589
-#define NUM_OBJS 3
-#define NUM_BOUNCES 20
-#define NUM_SAMPLES 10
+#define NUM_OBJS 4
+#define NUM_BOUNCES 6
+#define NUM_SAMPLES 5
 #define T_MIN 0.001f
 #define T_MAX 1000.0f
 
 const int LAMBERTIAN = 0;
-const int LIGHT = 1;
-const int DIELECTRIC = 2;
-const int FLOOR = 3;
+const int MIRROR = 1;
+const int FLOOR = 2;
 int seed = 42069;
 
 layout(location = 0) out vec4 FragColor;
@@ -22,6 +21,8 @@ layout (std140) uniform matrices
     vec3 sky;
     float fovy;
 };
+
+uniform float time;
 
 struct Material
 {
@@ -48,23 +49,31 @@ const Sphere m_objects[NUM_OBJS] = Sphere[]
     // Sphere(vec3(-0.7f, 0.3f, -2.0f), 0.3f, Material(0, vec3(186.0f/255, 121.0f/255, 86.0f/255))),
     // Sphere(vec3(0.0f, -100.0f, -2.0f), 100.0f, Material(3, vec3(80.0f/420, 110.0f/420, 173.0f/420)))
 
-    Sphere(vec3(-0.7f, 0.3f, -2.0f), 0.3f, Material(0, vec3(186.0f/255, 121.0f/255, 86.0f/255))),
-    Sphere(vec3(0.7f, 0.5f, -2.0f), 0.5f, Material(1, vec3(0.85f))),
-    Sphere(vec3(0.0f, -100.0f, -2.0f), 100.0f, Material(3, vec3(80.0f/420, 110.0f/420, 173.0f/420)))
+    // Sphere(vec3(-0.6f, 0.3f, -2.0f), 0.3f, Material(LAMBERTIAN, vec3(186.0f/255, 121.0f/255, 86.0f/255))),
+    // Sphere(vec3(0.6f, 0.5f, -2.0f), 0.5f, Material(MIRROR, vec3(0.85f))),
+    // Sphere(vec3(0.0f, -100.0f, -2.0f), 100.0f, Material(FLOOR, vec3(80.0f/420, 110.0f/420, 173.0f/420)))
+
+    Sphere(vec3(-0.3f, 0.3f, -2.0f), 0.3f, Material(LAMBERTIAN, vec3(1.0f, 0.0f, 0.0f))),
+    Sphere(vec3(0.3f, 0.3f, -2.0f), 0.3f, Material(LAMBERTIAN, vec3(0.0f, 0.0f, 1.0f))),
+    Sphere(vec3(0.0f, 0.5f, -3.2f), 0.5f, Material(MIRROR, vec3(0.85f))),
+    Sphere(vec3(0.0f, -1000.0f, -2.0f), 1000.0f, Material(FLOOR, vec3(80.0f/420, 110.0f/420, 173.0f/420)))
 );
 
 
 float smoothClamp(float x, float a, float b);
-float rand(inout int seed);
+float rand(vec2 co, vec2 normal_co);
 vec3 reflect(Ray ray, vec3 normal);
-void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, inout bool stop);
+void radiance(Ray ray, out Ray ray_next, out vec3 attenuation, inout bool stop, inout vec2 seed, in int depth);
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal);
 vec3 skyColor(Ray ray);
-vec3 randUnitVector(vec3 normal);
+vec3 randUnitVector(Ray ray, vec3 normal);
 vec3 randVectorInHemisphere(vec3 normal);
 vec3 shootRay(Ray ray);
-int hash(int x);
+int hash(inout int seed);
 vec3 hashOld33(vec3 p);
+vec3 hash32(vec2 p);
+vec3 random_in_unit_sphere(vec2 p);
+vec2 hash22(vec2 p);
 
 
 void main()
@@ -94,7 +103,8 @@ vec3 shootRay(Ray ray)
     bool stop = false;
     for(int i = 0; i < NUM_BOUNCES; i++)
     {
-        radiance(ray, ray_next, attenuation, stop);
+        vec2 seed = hash22(ray.dir.xy * 999.0f + float(i) + time);
+        radiance(ray, ray_next, attenuation, stop, seed, NUM_BOUNCES - i);
         color *= attenuation;
         ray = ray_next;
         if(stop)
@@ -108,21 +118,17 @@ vec3 shootRay(Ray ray)
 /*
  *  Shoot ray in scene and calculate closest intersection by looping through spheres
  */
-void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, inout bool stop)
+void radiance(Ray ray, out Ray ray_next, out vec3 attenuation, inout bool stop, inout vec2 seed, in int depth)
 {
-    // If ray intersects with circle
-    // Calculate attenuation based on Lambertian BRDF
-    // or use skyColor(ray);
-    
     float closest_hit = 2000.0f;
     for(int i = 0; i < NUM_OBJS; i++)
     {
         Sphere sphere = m_objects[i];
         sphere.center = (rotation * view * vec4(sphere.center, 1.0f)).xyz;
 
-        float t_hit;
-        vec3 hit_point;
-        vec3 normal;
+        float t_hit = 1.0f;
+        vec3 hit_point = vec3(1.0f);
+        vec3 normal = vec3(1.0f);
 
         bool did_hit = intersectSphere(ray, sphere, t_hit, hit_point, normal);
 
@@ -130,26 +136,21 @@ void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, inout bool stop
         {
             closest_hit = t_hit;
             ray_next.origin = hit_point;
-            // ray_next.dir = reflect(ray, normal);
-            ray_next.dir = normal + randUnitVector(normal);
-            // ray_next.dir = randVectorInHemisphere(normal);
-            if(sphere.material.type == 0)
+            // ray_next.dir = normalize(normal + randUnitVector(ray, normal));
+            if(sphere.material.type == LAMBERTIAN)
             {
-                float brightness = max(dot(normal, sky), 0);
-                // attenuation = sphere.material.albedo * (normal * 0.5f + 0.5f) * brightness;
-                attenuation = sphere.material.albedo * brightness;
-                // stop = true;
-            }
-            else if(sphere.material.type == 1)
-            {
-                // attenuation = vec3(1.0f);
+                ray_next.dir = normalize(normal + random_in_unit_sphere(seed * 999.0f + float(depth)));
                 attenuation = sphere.material.albedo;
             }
-            else if(sphere.material.type == 3)
+            else if(sphere.material.type == MIRROR)
             {
-                float brightness = max(dot(normal, sky), 0);
-                // attenuation = sphere.material.albedo * (normal * 0.5f + 0.5f) * brightness;
-                attenuation = sphere.material.albedo * brightness;
+                ray_next.dir = normal;
+                attenuation = sphere.material.albedo;
+            }
+            else if(sphere.material.type == FLOOR)
+            {
+                ray_next.dir = normalize(normal + random_in_unit_sphere(seed * 999.0f + float(depth)));
+                attenuation = sphere.material.albedo;
             }
         }
     }
@@ -159,20 +160,22 @@ void radiance(Ray ray, out Ray ray_next, inout vec3 attenuation, inout bool stop
     {
         stop = true;
         ray_next.origin = vec3(0.0f);
-        ray_next.dir = vec3(0.0f, 1.0f, 0.0f);
+        ray_next.dir = vec3(0.0f, 0.0f, 0.0f);
         attenuation = skyColor(ray);
     }
 }
 
 bool intersectSphere(Ray ray, Sphere sphere, out float t_hit, out vec3 hit_point, out vec3 normal)
 {
+    vec3 oc = sphere.center - ray.origin;
+
     float a = dot(ray.dir, ray.dir);
-    float b = - 2.0f * dot(sphere.center - ray.origin, ray.dir);
-    float c = dot(sphere.center - ray.origin, sphere.center - ray.origin) - sphere.radius * sphere.radius;
+    float b = - 2.0f * dot(oc, ray.dir);
+    float c = dot(oc, oc) - sphere.radius * sphere.radius;
 
     float det = b*b - 4.0f*a*c;
     
-    if(det < 0)
+    if(det < 0.0f)
     {
         return false;
     }
@@ -194,7 +197,7 @@ vec3 reflect(Ray ray, vec3 normal)
  */
 vec3 skyColor(Ray ray)
 {
-    float t = 0.5 * (ray.dir.y + 1.0f);
+    float t = 0.5 * (dot(ray.dir, sky) + 1.0f);
     return (1.0 - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
 }
 
@@ -204,40 +207,45 @@ float smoothClamp(float x, float a, float b)
     return t != x ? t : b + (a - b)/(1. + exp((b - a)*(2.*x - a - b)/((x - a)*(b - x))));
 }
 
-float rand(inout int seed)
+float rand(vec2 co, vec2 normal_co)
 {
-    // return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-    seed += 2;
-    return fract((0.5 * sin(seed) + 0.5) * 43758.5453);
+    // return fract(sin(dot(co + normal_co, vec2(12.9898, 78.233))) * 43758.5453f);
+    // return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453f);
+    float t = 12.9898f*co.x*normal_co.x + 78.233f*co.y*normal_co.y; 
+    return fract((43758.5453f+t) * sin(t));
+    // seed += 69;
+    // return fract((0.5f * sin(fract(69.12345f * seed)*4.0f) + 0.5f) * 43758.5453f);
 }
 
-vec3 randUnitVector(vec3 normal)
+vec3 randUnitVector(Ray ray, vec3 normal)
 {
     // return normalize(vec3(hash(seed), hash(seed+1), hash(seed+2)));
-    // return normalize(vec3(rand(seed), rand(seed), rand(seed)));
-    return normalize(hashOld33(normal));
+    // return normalize(hashOld33(normal));
+    return normalize(vec3(rand(ray.dir.xy, normal.xz), rand(ray.dir.xz, normal.yz), rand(ray.dir.yz, normal.xy)));
 }
 
 vec3 randVectorInHemisphere(vec3 normal)
 {
-    while(true)
-    {
-        vec3 rand_vec = randUnitVector(normal);
-        if(dot(rand_vec, normal) > 0)
-        {
-            return rand_vec;
-        }
-    }
+    return normal;
+    // while(true)
+    // {
+    //     vec3 rand_vec = randUnitVector(normal);
+    //     if(dot(rand_vec, normal) > 0)
+    //     {
+    //         return rand_vec;
+    //     }
+    // }
 }
 
-int hash(int x)
+int hash(inout int seed)
 {
-    x += ( x << 10 );
-    x ^= ( x >>  6 );
-    x += ( x <<  3 );
-    x ^= ( x >> 11 );
-    x += ( x << 15 );
-    return x;
+    seed += 69;
+    seed += ( seed << 10 );
+    seed ^= ( seed >>  6 );
+    seed += ( seed <<  3 );
+    seed ^= ( seed >> 11 );
+    seed += ( seed << 15 );
+    return seed;
 }
 
 vec3 hashOld33(vec3 p)
@@ -247,4 +255,32 @@ vec3 hashOld33(vec3 p)
 			  dot(p,vec3(113.5f,271.9f,124.6f)));
 
 	return fract(sin(p)*43758.5453123f);
+}
+
+vec3 hash32(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yxz+33.33);
+    return fract((p3.xxy+p3.yzz)*p3.zyx);
+}
+
+vec3 random_in_unit_sphere(vec2 p) {
+    vec3 rand = hash32(p);
+    float phi = 2.0 * M_PI * rand.x;
+    float cosTheta = 2.0 * rand.y - 1.0;
+    float u = rand.z;
+
+    float theta = acos(cosTheta);
+    float r = pow(u, 1.0 / 3.0);
+
+    float x = r * sin(theta) * cos(phi);
+    float y = r * sin(theta) * sin(phi);
+    float z = r * cos(theta);
+
+    return vec3(x, y, z);
+}
+
+vec2 hash22(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yzx+33.33);
+    return fract((p3.xx+p3.yz)*p3.zy);
 }

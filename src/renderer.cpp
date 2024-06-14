@@ -6,6 +6,8 @@
 //
 
 #include "renderer.hpp"
+#include "SDL2/SDL_timer.h"
+#include "utils/renderer_utils.hpp"
 
 
 using namespace glm;
@@ -82,6 +84,10 @@ void Renderer::setUniforms()
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), &camera.rotation_matrix[0][0]);
     glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(mat4), sizeof(vec3), &camera.rotation_matrix[1]);
     glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(mat4) + sizeof(vec3), sizeof(float), &camera.fovy);
+
+    GLuint time_loc = glGetUniformLocation(shader_program, "time");
+    glUniform1f(time_loc, (float)SDL_GetTicks());
+
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
